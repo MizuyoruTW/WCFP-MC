@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">WCFP-MC</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Please log in...</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_settings">設定</string>
+    <string name="menu_about">關於</string>
+    <string name="menu_home">首頁</string>
+
+    <!--首頁-->
+    <string name="welcome">Welcome!</string>
+    <string name="intro">WikiCFP is a semantic wiki for Calls For Papers in science and technology fields. There are about 50,000 CFPs on WikiCFP. Over 100,000 researchers use WikiCFP each month. </string>
+</resources>
