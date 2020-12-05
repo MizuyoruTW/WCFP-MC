@@ -8,8 +8,10 @@
     <string name="menu_settings">設定</string>
     <string name="menu_about">關於</string>
     <string name="menu_home">首頁</string>
+    <string name="menu_category">類別</string>
 
     <!--首頁-->
     <string name="welcome">Welcome!</string>
     <string name="intro">WikiCFP is a semantic wiki for Calls For Papers in science and technology fields. There are about 50,000 CFPs on WikiCFP. Over 100,000 researchers use WikiCFP each month. </string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

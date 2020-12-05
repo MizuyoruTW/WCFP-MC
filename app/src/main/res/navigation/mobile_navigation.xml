@@ -22,5 +22,10 @@
         android:name="com.example.wcfp_mc.ui.about.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/nav_category"
+        android:name="com.example.wcfp_mc.ui.CategoryFragment"
+        android:label="@string/menu_category"
+        tools:layout="@layout/fragment_category" />
 
 </navigation>
