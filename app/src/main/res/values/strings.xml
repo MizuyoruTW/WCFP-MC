@@ -14,4 +14,8 @@
     <string name="welcome">Welcome!</string>
     <string name="intro">WikiCFP is a semantic wiki for Calls For Papers in science and technology fields. There are about 50,000 CFPs on WikiCFP. Over 100,000 researchers use WikiCFP each month. </string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--類別-->
+    <string name="atoz">A-Z</string>
+    <string name="cfps">#CFP</string>
 </resources>
