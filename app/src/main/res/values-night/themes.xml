@@ -14,6 +14,5 @@
         <!-- Customize your theme here. -->
         <item name="backgroundColor">@color/gray</item>
         <item name="android:textColor">@color/white</item>
-        <item name="colorAccent">@color/white</item>
     </style>
 </resources>
