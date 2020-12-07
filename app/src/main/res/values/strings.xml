@@ -16,6 +16,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--類別-->
+    <string name="cfps">#CFP↓</string>
+    <string name="cfps_re">#CFP↑</string>
     <string name="atoz">A-Z</string>
-    <string name="cfps">#CFP</string>
+    <string name="ztoa">Z-A</string>
 </resources>

@@ -21,16 +21,20 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
+        private final TextView textView2;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
             textView = (TextView) view.findViewById(R.id.textView);
-
+            textView2 = (TextView) view.findViewById(R.id.textView2);
         }
 
-        public TextView getTextView() {
+        public TextView getNameTextView() {
             return textView;
+        }
+        public TextView getCFPTextView() {
+            return textView2;
         }
     }
 
@@ -60,7 +64,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet.get(position).getName());
+        viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
+        viewHolder.getCFPTextView().setText(String.valueOf(localDataSet.get(position).getCFPs()) + " CFPs");
     }
 
     // Return the size of your dataset (invoked by the layout manager)

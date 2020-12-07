@@ -1,7 +1,9 @@
 package com.example.wcfp_mc.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,11 +18,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.wcfp_mc.Category;
@@ -42,12 +46,12 @@ import java.util.Comparator;
  */
 public class CategoryFragment extends Fragment {
     private RecyclerView recyclerView;
-    private ArrayList<Category> originalCL=new ArrayList<Category> ();
+    private ArrayList<Category> originalCL = new ArrayList<Category>();
     private CategoryListAdapter CLA;
-    private ArrayList<Category> CategoryList=new ArrayList<Category> ();
+    private ArrayList<Category> CategoryList = new ArrayList<Category>();
     private Handler handler;
-    private String filter="";
-    private int sortby=0;
+    private String filter = "";
+    private int sortby = 0;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -83,76 +87,95 @@ public class CategoryFragment extends Fragment {
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what ) {
+                switch (msg.what) {
                     case 1:
                         ListFilter();
                         CLA.notifyDataSetChanged();
                         break;
                     case -1:
-                        Toast.makeText(getContext(),msg.obj.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         };
-        recyclerView = (RecyclerView)root.findViewById(R.id.catagory_list);
+        recyclerView = (RecyclerView) root.findViewById(R.id.catagory_list);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        CLA =new CategoryListAdapter(CategoryList);
+        CLA = new CategoryListAdapter(CategoryList);
         recyclerView.setAdapter(CLA);
 
-        EditText editText=(EditText) root.findViewById(R.id.editText);
+        EditText editText = (EditText) root.findViewById(R.id.editText);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        ImageButton button=(ImageButton) root.findViewById(R.id.imageButton);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                filter = editText.getText().toString();
+                ListFilter();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        ImageButton button = (ImageButton) root.findViewById(R.id.imageButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filter=editText.getText().toString();
+                hideSoftKeyboard(getActivity());
+                editText.clearFocus();
+                filter = editText.getText().toString();
                 ListFilter();
-                Toast.makeText(getContext(),String.valueOf(CategoryList.size()),Toast.LENGTH_SHORT).show();
-                CLA.notifyDataSetChanged();}
+            }
         });
+        final AppCompatActivity act = (AppCompatActivity) getActivity();
+        if (act.getSupportActionBar() != null) {
+            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
+        }
         getCategoryList();
         setMenu(root);
         return root;
     }
 
-    private void getCategoryList(){
-        String url ="http://www.wikicfp.com/cfp/allcat?sortby=0" ;
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    try
-                    {
-                        Document data  = Jsoup.connect(url).get();
-                        Elements table=data.select("tbody").get(3).select("tr");
-                        for(int i=3;i<table.size();++i){
-                            Elements row=table.get(i).select("td");
-                            for(int j=0;j<row.size();j+=2){
-                                Category ca=new Category();
-                                ca.setName(row.get(j).select("a").text());
-                                ca.setCFPs(Integer.parseInt( row.get(j+1).text()));
-                                ca.setUrl("http://www.wikicfp.com" + row.get(j).selectFirst("a").attr("href"));
-                                originalCL.add(ca);
-                            }
+    private void getCategoryList() {
+        String url = "http://www.wikicfp.com/cfp/allcat?sortby=0";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Document data = Jsoup.connect(url).get();
+                    Elements table = data.select("tbody").get(3).select("tr");
+                    for (int i = 3; i < table.size(); ++i) {
+                        Elements row = table.get(i).select("td");
+                        for (int j = 0; j < row.size(); j += 2) {
+                            Category ca = new Category();
+                            ca.setName(row.get(j).select("a").text());
+                            ca.setCFPs(Integer.parseInt(row.get(j + 1).text()));
+                            ca.setUrl("http://www.wikicfp.com" + row.get(j).selectFirst("a").attr("href"));
+                            originalCL.add(ca);
                         }
-                        Message msg = new Message();
-                        msg.what = 1;
-                        handler.sendMessage(msg);
                     }
-                    catch(Exception e)
-                    {
-                        Message msg = new Message();
-                        msg.what = -1;
-                        msg.obj=e.toString();
-                        handler.sendMessage(msg);
-                    }
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
+                } catch (Exception e) {
+                    Message msg = new Message();
+                    msg.what = -1;
+                    msg.obj = e.toString();
+                    handler.sendMessage(msg);
                 }
-            }).start();
+            }
+        }).start();
 
     }
 
-    private void setMenu(View root){
+    private void setMenu(View root) {
 
         final ImageButton imageButton = root.findViewById(R.id.imageButton2);
 
@@ -165,17 +188,9 @@ public class CategoryFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 item.setChecked(!item.isChecked());
-                switch (item.getItemId()) {
-                    case R.id.sort_cfp:
-                        sortby=0;
-                        ListFilter();
-                        return true;
-                    case R.id.sort_atoz:
-                        sortby=1;
-                        ListFilter();
-                        return true;
-                }
-                return false;
+                sortby = item.getItemId();
+                ListFilter();
+                return true;
             }
         });
 
@@ -186,36 +201,46 @@ public class CategoryFragment extends Fragment {
             }
         });
     }
-    private void ListFilter(){
+
+    private void ListFilter() {
         this.CategoryList.clear();
-        for(int i=0;i<originalCL.size();++i){
-            if(originalCL.get(i).getName().startsWith(filter)){
+        for (int i = 0; i < originalCL.size(); ++i) {
+            if (originalCL.get(i).getName().startsWith(filter)) {
                 this.CategoryList.add(originalCL.get(i));
             }
         }
-        if(sortby==0){
-            CategoryComparatorCFP CC = new CategoryComparatorCFP();
-            Collections.sort(CategoryList,CC.reversed());
-            CLA.notifyDataSetChanged();
-        }else{
-            CategoryComparatorAtoZ CC = new CategoryComparatorAtoZ();
-            Collections.sort(CategoryList,CC.reversed());
-            CLA.notifyDataSetChanged();
+        Comparator<Category> comp = new CategoryComparatorCFP().reversed();
+        if (sortby == R.id.sort_atoz) {
+            comp = new CategoryComparatorAtoZ();
+        } else if (sortby == R.id.sort_cfp_reverse) {
+            comp = new CategoryComparatorCFP();
+        } else if (sortby == R.id.sort_ztoa) {
+            comp = new CategoryComparatorAtoZ().reversed();
         }
+        CategoryList.sort(comp);
+        CLA.notifyDataSetChanged();
+        final AppCompatActivity act = (AppCompatActivity) getActivity();
+        if (act.getSupportActionBar() != null) {
+            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
 
-class CategoryComparatorAtoZ implements Comparator<Category>
-{
-    public int compare(Category c1, Category c2)
-    {
+class CategoryComparatorAtoZ implements Comparator<Category> {
+    public int compare(Category c1, Category c2) {
         return c1.getName().compareTo(c2.getName());
     }
 }
-class CategoryComparatorCFP implements Comparator<Category>
-{
-    public int compare(Category c1, Category c2)
-    {
-        return Integer.compare( c1.getCFPs(),c2.getCFPs());
+
+class CategoryComparatorCFP implements Comparator<Category> {
+    public int compare(Category c1, Category c2) {
+        return Integer.compare(c1.getCFPs(), c2.getCFPs());
     }
 }
