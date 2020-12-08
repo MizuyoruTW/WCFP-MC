@@ -119,7 +119,10 @@ public class CategoryFragment extends Fragment {
         return root;
     }
 
+
+
     private void getCategoryList() {
+        originalCL.clear();
         String url = "http://www.wikicfp.com/cfp/allcat?sortby=0";
         new Thread(() -> {
             try {
