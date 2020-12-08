@@ -55,6 +55,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getCategoryList();
     }
 
     @Override
@@ -114,7 +115,6 @@ public class CategoryFragment extends Fragment {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
-        getCategoryList();
         setMenu(root);
         return root;
     }
