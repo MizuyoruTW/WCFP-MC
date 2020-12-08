@@ -21,4 +21,10 @@
     <string name="atoz">A-Z</string>
     <string name="ztoa">Z-A</string>
     <string name="CFPs">%1$s CFPs</string>
+
+    <!--關於-->
+    <string name="contact">Contact us</string>
+    <string name="jim_mail">s1071543@mail.yzu.edu.tw</string>
+    <string name="yu_mail">s1071536@mail.yzu.edu.tw</string>
+    <string name="copyright">Copyright © 2020 – 2020. All rights reserved.</string>
 </resources>
