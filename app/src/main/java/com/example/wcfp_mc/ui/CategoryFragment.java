@@ -15,12 +15,9 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -36,19 +33,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CategoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CategoryFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private ArrayList<Category> originalCL = new ArrayList<Category>();
+    private final ArrayList<Category> originalCL = new ArrayList<>();
     private CategoryListAdapter CLA;
-    private ArrayList<Category> CategoryList = new ArrayList<Category>();
+    private final ArrayList<Category> CategoryList = new ArrayList<>();
     private Handler handler;
     private String filter = "";
     private int sortby = 0;
@@ -57,21 +51,6 @@ public class CategoryFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CategoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CategoryFragment newInstance(String param1, String param2) {
-        CategoryFragment fragment = new CategoryFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,12 +76,12 @@ public class CategoryFragment extends Fragment {
                 }
             }
         };
-        recyclerView = (RecyclerView) root.findViewById(R.id.catagory_list);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.catagory_list);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        CLA = new CategoryListAdapter(CategoryList);
+        CLA = new CategoryListAdapter(CategoryList,getContext());
         recyclerView.setAdapter(CLA);
 
         EditText editText = (EditText) root.findViewById(R.id.editText);
@@ -124,14 +103,11 @@ public class CategoryFragment extends Fragment {
             }
         });
         ImageButton button = (ImageButton) root.findViewById(R.id.imageButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideSoftKeyboard(getActivity());
-                editText.clearFocus();
-                filter = editText.getText().toString();
-                ListFilter();
-            }
+        button.setOnClickListener(view -> {
+            hideSoftKeyboard(getActivity());
+            editText.clearFocus();
+            filter = editText.getText().toString();
+            ListFilter();
         });
         final AppCompatActivity act = (AppCompatActivity) getActivity();
         if (act.getSupportActionBar() != null) {
@@ -145,31 +121,28 @@ public class CategoryFragment extends Fragment {
 
     private void getCategoryList() {
         String url = "http://www.wikicfp.com/cfp/allcat?sortby=0";
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Document data = Jsoup.connect(url).get();
-                    Elements table = data.select("tbody").get(3).select("tr");
-                    for (int i = 3; i < table.size(); ++i) {
-                        Elements row = table.get(i).select("td");
-                        for (int j = 0; j < row.size(); j += 2) {
-                            Category ca = new Category();
-                            ca.setName(row.get(j).select("a").text());
-                            ca.setCFPs(Integer.parseInt(row.get(j + 1).text()));
-                            ca.setUrl("http://www.wikicfp.com" + row.get(j).selectFirst("a").attr("href"));
-                            originalCL.add(ca);
-                        }
+        new Thread(() -> {
+            try {
+                Document data = Jsoup.connect(url).get();
+                Elements table = data.select("tbody").get(3).select("tr");
+                for (int i = 3; i < table.size(); ++i) {
+                    Elements row = table.get(i).select("td");
+                    for (int j = 0; j < row.size(); j += 2) {
+                        Category ca = new Category();
+                        ca.setName(row.get(j).select("a").text());
+                        ca.setCFPs(Integer.parseInt(row.get(j + 1).text()));
+                        ca.setUrl("http://www.wikicfp.com" + row.get(j).selectFirst("a").attr("href"));
+                        originalCL.add(ca);
                     }
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (Exception e) {
-                    Message msg = new Message();
-                    msg.what = -1;
-                    msg.obj = e.toString();
-                    handler.sendMessage(msg);
                 }
+                Message msg = new Message();
+                msg.what = 1;
+                handler.sendMessage(msg);
+            } catch (Exception e) {
+                Message msg = new Message();
+                msg.what = -1;
+                msg.obj = e.toString();
+                handler.sendMessage(msg);
             }
         }).start();
 
@@ -184,25 +157,22 @@ public class CategoryFragment extends Fragment {
         dropDownMenu.inflate(R.menu.sort);
 
 
-        dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                item.setChecked(!item.isChecked());
-                sortby = item.getItemId();
-                ListFilter();
-                return true;
-            }
+        dropDownMenu.setOnMenuItemClickListener(item -> {
+            item.setChecked(!item.isChecked());
+            sortby = item.getItemId();
+            ListFilter();
+            return true;
         });
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dropDownMenu.show();
-            }
-        });
+        imageButton.setOnClickListener(v -> dropDownMenu.show());
     }
 
     private void ListFilter() {
+        final AppCompatActivity act = (AppCompatActivity) getActivity();
+        if (act.getSupportActionBar() != null) {
+            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
+        }
         this.CategoryList.clear();
         for (int i = 0; i < originalCL.size(); ++i) {
             if (originalCL.get(i).getName().startsWith(filter)) {
@@ -219,7 +189,6 @@ public class CategoryFragment extends Fragment {
         }
         CategoryList.sort(comp);
         CLA.notifyDataSetChanged();
-        final AppCompatActivity act = (AppCompatActivity) getActivity();
         if (act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.INVISIBLE);
