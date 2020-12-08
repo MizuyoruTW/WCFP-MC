@@ -4,58 +4,54 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.wcfp_mc.CFP;
+import com.example.wcfp_mc.CFPListAdapter;
+import com.example.wcfp_mc.Category;
+import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CFPsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CFPsFragment extends Fragment {
+    private final ArrayList<CFP> CFPList = new ArrayList<>();
+    private  String CategoryURL="";
+    private CFPListAdapter CLA;
+    private Handler handler;
+    private int page=1;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public CFPsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CFPsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CFPsFragment newInstance(String param1, String param2) {
-        CFPsFragment fragment = new CFPsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        CategoryURL=getArguments().getString("url");
+        getCFPList();
     }
 
     @Override
@@ -65,8 +61,86 @@ public class CFPsFragment extends Fragment {
         View root;
         root = inflater.inflate(R.layout.fragment_c_f_ps, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
+
+        handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                final AppCompatActivity act = (AppCompatActivity) getActivity();
+                if (act.getSupportActionBar() != null) {
+                    ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+                switch (msg.what) {
+                    case 1:
+                        CLA.notifyDataSetChanged();
+                        break;
+                    case -1:
+                        Toast.makeText(getContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.cfp_list);
+        // 設置RecyclerView為列表型態
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // 設置格線
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        CLA = new CFPListAdapter(CFPList);
+        recyclerView.setAdapter(CLA);
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    ++page;
+                    final AppCompatActivity act = (AppCompatActivity) getActivity();
+                    if (act.getSupportActionBar() != null) {
+                        ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                    getCFPList();
+                }
+            }
+        });
+
+        final AppCompatActivity act = (AppCompatActivity) getActivity();
+        if (act.getSupportActionBar() != null) {
+            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
+        }
         return root;
     }
 
+    private void getCFPList() {
+        new Thread(() -> {
+            try {
+                Document data = Jsoup.connect(CategoryURL + "&page=" + String.valueOf(page)).get();
+                Elements table = data.select("tbody").get(5).select("tr");
+                for (int i = 1; i < table.size(); i+=2) {
+                    Elements first_row = table.get(i).select("td");
+                    Elements second_row = table.get(i+1).select("td");
+                    if(first_row.first().text().equals("Expired CFPs")){
+                        --i;
+                        continue;
+                    }
+                    CFP newCFP=new CFP();
+                    newCFP.setEvent(first_row.first().selectFirst("a").text());
+                    newCFP.setURL(first_row.first().selectFirst("a").attr("href"));
+                    newCFP.setName(first_row.get(1).text());
+                    newCFP.setTime(second_row.get(0).text());
+                    newCFP.setDeadline(second_row.get(2).text());
+                    CFPList.add(newCFP);
+                }
+                Message msg = new Message();
+                msg.what = 1;
+                handler.sendMessage(msg);
+            } catch (Exception e) {
+                Message msg = new Message();
+                msg.what = -1;
+                msg.obj = e.toString();
+                handler.sendMessage(msg);
+            }
+        }).start();
+
+    }
 
 }

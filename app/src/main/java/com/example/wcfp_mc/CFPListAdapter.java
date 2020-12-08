@@ -23,35 +23,41 @@ import com.example.wcfp_mc.ui.CFPsFragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
+public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHolder> {
 
-    private final ArrayList<Category> localDataSet;
-    private final SQLiteDatabase db;
+    private final ArrayList<CFP> localDataSet;
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
-        private final TextView textView2;
-        private final CheckBox checkBox;
+        private final TextView eventTV;
+        private final TextView timeTV;
+        private final TextView nameTV;
+        private final TextView deadlineTV;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-            textView = (TextView) view.findViewById(R.id.textView);
-            textView2 = (TextView) view.findViewById(R.id.textView2);
-            checkBox=(CheckBox)view.findViewById(R.id.checkBox);
+            eventTV =  view.findViewById(R.id.eventname);
+            timeTV = view.findViewById(R.id.time);
+            nameTV =  view.findViewById(R.id.name);
+            deadlineTV =  view.findViewById(R.id.deadline);
         }
 
+        public TextView getEventTextView() {
+            return eventTV;
+        }
         public TextView getNameTextView() {
-            return textView;
+            return nameTV;
         }
-        public TextView getCFPTextView() {
-            return textView2;
+        public TextView getTimeTextView() {
+            return timeTV;
         }
-        public CheckBox getCheckBox(){return checkBox;}
+        public TextView getDeadlineTextView() {
+            return deadlineTV;
+        }
     }
 
     /**
@@ -60,10 +66,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public CategoryListAdapter(ArrayList<Category>  dataSet, Context context) {
+    public CFPListAdapter(ArrayList<CFP>  dataSet) {
         localDataSet = dataSet;
-        CategoryDBHelper dbHelper=new CategoryDBHelper(context);
-        db=dbHelper.getReadableDatabase();
     }
 
     // Create new views (invoked by the layout manager)
@@ -72,7 +76,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.category_list_layout, viewGroup, false);
+                .inflate(R.layout.cfp_list_layout, viewGroup, false);
 
         return new ViewHolder(view);
     }
@@ -83,31 +87,17 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+        viewHolder.getEventTextView().setText(localDataSet.get(position).getEvent());
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
-        viewHolder.getCFPTextView().setText(String.format(Locale.getDefault(),"%1$d CFPs",localDataSet.get(position).getCFPs()));
-        CheckBox checkBox=viewHolder.getCheckBox();
-        String sql=String.format(Locale.getDefault(),"SELECT * FROM favorates WHERE name='%1$s'",localDataSet.get(position).getName());
-        Cursor c=db.rawQuery(sql,null);
-        checkBox.setChecked(c.getCount()>0);
-        c.close();
-        checkBox.setOnClickListener(view -> {
-            if(((CheckBox)view).isChecked()){
-                ContentValues cv = new ContentValues();
-                cv.put("name",localDataSet.get(position).getName());
-                db.insert("favorates", null, cv);
-            }else{
-                db.delete("favorates", "name='"+localDataSet.get(position).getName()+"'",null);
-            }
-        });
+        viewHolder.getTimeTextView().setText(localDataSet.get(position).getTime());
+        viewHolder.getDeadlineTextView().setText(localDataSet.get(position).getDeadline());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CFPsFragment next = new CFPsFragment();
                 MainActivity act=(MainActivity) view.getContext();
                 NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
                 Bundle bundle = new Bundle();
-                bundle.putString("name", localDataSet.get(position).getName());
-                bundle.putString("url", localDataSet.get(position).getUrl());
+                bundle.putString("url", localDataSet.get(position).getURL());
 
                 navController.navigate(R.id.action_to_cfp,bundle);
             }
