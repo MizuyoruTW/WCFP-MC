@@ -1,16 +1,9 @@
 package com.example.wcfp_mc;
 
-import android.app.FragmentManager;
-import android.app.Fragment;
+
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
 import  android.content.SharedPreferences;
 
-import com.example.wcfp_mc.ui.about.AboutFragment;
-import com.example.wcfp_mc.ui.settings.SettingsFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatDelegate;

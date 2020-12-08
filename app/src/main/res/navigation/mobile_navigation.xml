@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.wcfp_mc.ui.home.HomeFragment"
+        android:name="com.example.wcfp_mc.ui.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.example.wcfp_mc.ui.settings.SettingsFragment"
+        android:name="com.example.wcfp_mc.ui.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.example.wcfp_mc.ui.about.AboutFragment"
+        android:name="com.example.wcfp_mc.ui.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
     <fragment

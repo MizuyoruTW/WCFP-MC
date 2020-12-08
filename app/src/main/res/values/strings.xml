@@ -20,4 +20,5 @@
     <string name="cfps_re">#CFP↑</string>
     <string name="atoz">A-Z</string>
     <string name="ztoa">Z-A</string>
+    <string name="CFPs">%1$s CFPs</string>
 </resources>

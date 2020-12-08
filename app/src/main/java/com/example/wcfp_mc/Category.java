@@ -1,6 +1,5 @@
 package com.example.wcfp_mc;
 
-import java.util.Comparator;
 
 public class Category {
     private int CFPs=0;
