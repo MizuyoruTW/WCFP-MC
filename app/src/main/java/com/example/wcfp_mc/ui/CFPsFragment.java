@@ -66,7 +66,7 @@ public class CFPsFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 final AppCompatActivity act = (AppCompatActivity) getActivity();
-                if (act.getSupportActionBar() != null) {
+                if (act!=null && act.getSupportActionBar() != null) {
                     ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }

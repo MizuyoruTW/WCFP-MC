@@ -30,18 +30,26 @@
         <action
             android:id="@+id/action_to_cfp"
             app:destination="@id/nav_cfp">
-            <argument
-                android:name="cat_name"
-                app:argType="string"
-                android:defaultValue="SHARK" />
-
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/nav_cfp"
         android:name="com.example.wcfp_mc.ui.CFPsFragment"
-        android:label="FUCK"
+        android:label="@string/menu_cfp"
         tools:layout="@layout/fragment_c_f_ps" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.wcfp_mc.ui.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" />
+
+    <action
+        android:id="@+id/action_to_login"
+        app:destination="@id/nav_login"
+        app:popUpTo="@id/nav_login"
+        app:popUpToInclusive="true">
+    </action>
 
 </navigation>

@@ -3,11 +3,21 @@ package com.example.wcfp_mc;
 
 import android.os.Bundle;
 import  android.content.SharedPreferences;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.wcfp_mc.ui.LoginFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -46,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        TextView textView=(TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
+        textView.setOnClickListener(view -> {
+            navController.navigate(R.id.action_to_login);
+            drawer.closeDrawer(GravityCompat.START,false);
+        });
     }
 
 

@@ -9,6 +9,8 @@
     <string name="menu_about">關於</string>
     <string name="menu_home">首頁</string>
     <string name="menu_category">類別</string>
+    <string name="menu_cfp">CFPs</string>
+    <string name="menu_login">帳號管理</string>
 
     <!--首頁-->
     <string name="welcome">Welcome!</string>
@@ -31,4 +33,10 @@
     <!--CFPs-->
     <string name="timeLBL">Time: </string>
     <string name="deadlineLBL">Deadline: </string>
+
+    <!--登入-->
+    <string name="accountLBL">Account:</string>
+    <string name="passwordLBL">Password</string>
+    <string name="forgotLBL"><a href="http://www.wikicfp.com/cfp/servlet/user.reset">Forgot your password?</a></string>
+    <string name="submitlogin">Login</string>
 </resources>

@@ -102,7 +102,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CFPsFragment next = new CFPsFragment();
                 MainActivity act=(MainActivity) view.getContext();
                 NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
                 Bundle bundle = new Bundle();
