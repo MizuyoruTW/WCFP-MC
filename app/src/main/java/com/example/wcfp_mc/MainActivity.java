@@ -1,29 +1,23 @@
 package com.example.wcfp_mc;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import  android.content.SharedPreferences;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.wcfp_mc.ui.LoginFragment;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,11 +51,20 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        TextView textView=(TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
+        TextView textView= navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
         textView.setOnClickListener(view -> {
-            navController.navigate(R.id.action_to_login);
-            drawer.closeDrawer(GravityCompat.START,false);
+            String user_name=settings.getString("user_name","");
+            if(user_name.equals("")) {
+                navController.navigate(R.id.action_to_login);
+            }else{
+                navController.navigate(R.id.action_to_logout);
+            }
+            drawer.closeDrawer(GravityCompat.START, false);
         });
+        String username = settings.getString("user_name","");
+        if(!username.equals("")){
+            textView.setText(String.format(Locale.getDefault(),"歡迎，%1$s", username));
+        }
     }
 
 

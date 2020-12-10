@@ -9,5 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <!-- user define-->
     <color name="gray">#2B2B2B</color>
-    <color name="light_gray">#424242</color>
+    <color name="light_gray">#464646</color>
 </resources>

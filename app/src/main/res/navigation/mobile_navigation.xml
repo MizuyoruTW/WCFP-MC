@@ -45,10 +45,22 @@
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
 
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.wcfp_mc.ui.LogoutFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_logout" />
+
     <action
         android:id="@+id/action_to_login"
         app:destination="@id/nav_login"
         app:popUpTo="@id/nav_login"
+        app:popUpToInclusive="true">
+    </action>
+    <action
+        android:id="@+id/action_to_logout"
+        app:destination="@id/nav_logout"
+        app:popUpTo="@id/nav_logout"
         app:popUpToInclusive="true">
     </action>
 

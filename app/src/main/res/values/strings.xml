@@ -39,4 +39,11 @@
     <string name="passwordLBL">Password</string>
     <string name="forgotLBL"><a href="http://www.wikicfp.com/cfp/servlet/user.reset">Forgot your password?</a></string>
     <string name="submitlogin">Login</string>
+
+    <!--登出-->
+    <string name="logout">登出</string>
+
+    <!--設定-->
+    <string name="themeLBL">主題</string>
+    <string name="DKmode">黑暗模式</string>
 </resources>

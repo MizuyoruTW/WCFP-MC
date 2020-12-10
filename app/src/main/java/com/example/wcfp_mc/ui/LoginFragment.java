@@ -1,5 +1,7 @@
 package com.example.wcfp_mc.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,6 +10,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,9 +18,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.wcfp_mc.R;
 import com.google.android.material.navigation.NavigationView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,55 +37,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     CookieManager cookieManager = new CookieManager();
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String PREFS_NAME = "MyPrefsFile";
     private Handler handler;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private String cookies = "";
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CookieHandler.setDefault(cookieManager);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -86,15 +60,22 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root;
         root = inflater.inflate(R.layout.fragment_login, container, false);
-        TextView forgot = (TextView) root.findViewById(R.id.forgot);
-        TextView account = (TextView) root.findViewById(R.id.account);
-        TextView password = (TextView) root.findViewById(R.id.password);
-        Button submit = (Button) root.findViewById(R.id.submitlogin);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login(account.getText().toString(), password.getText().toString());
+
+        return root;
+    }
+    @Override
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
+        super.onViewCreated(view,savedInstanceState);
+        TextView forgot = view.findViewById(R.id.forgot);
+        TextView account = view.findViewById(R.id.account);
+        TextView password = view.findViewById(R.id.password);
+        Button submit = view.findViewById(R.id.submitlogin);
+        submit.setOnClickListener(view1 -> {
+            InputMethodManager imm =  (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(getActivity().getCurrentFocus()!=null) {
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             }
+            login(account.getText().toString(), password.getText().toString());
         });
         forgot.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -103,7 +84,7 @@ public class LoginFragment extends Fragment {
             public void handleMessage(Message msg) {
                 final AppCompatActivity act = (AppCompatActivity) getActivity();
                 if (act != null && act.getSupportActionBar() != null) {
-                    ProgressBar progressBar = (ProgressBar) act.findViewById(R.id.progressBar);
+                    ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 switch (msg.what) {
@@ -115,9 +96,16 @@ public class LoginFragment extends Fragment {
                                 cookies = cookie.getValue();
                                 Toast.makeText(getContext(), "歡迎，" + account.getText().toString(), Toast.LENGTH_SHORT).show();
                                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-                                TextView textView=(TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
+                                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                                TextView textView= navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
                                 textView.setText(String.format(Locale.getDefault(),"歡迎，%1$s", account.getText().toString()));
+                                SharedPreferences settings = getActivity(). getSharedPreferences(PREFS_NAME, 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("cookie_value",cookies);
+                                editor.putString("user_name",account.getText().toString());
+                                editor.apply();
                                 login = true;
+                                navController.navigateUp();
                             }
                         }
                         if (!login) {
@@ -129,9 +117,7 @@ public class LoginFragment extends Fragment {
                 }
             }
         };
-        return root;
     }
-
     private void login(String account, String password) {
         new Thread(() -> {
             try {
