@@ -108,7 +108,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 bundle.putString("name", localDataSet.get(position).getName());
                 bundle.putString("url", localDataSet.get(position).getUrl());
 
-                navController.navigate(R.id.action_to_cfp,bundle);
+                navController.navigate(R.id.action_to_cfps,bundle);
             }
         });
     }

@@ -98,7 +98,6 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
                 NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
                 Bundle bundle = new Bundle();
                 bundle.putString("url", localDataSet.get(position).getURL());
-
                 navController.navigate(R.id.action_to_cfp,bundle);
             }
         });

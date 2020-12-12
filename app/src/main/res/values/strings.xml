@@ -13,6 +13,8 @@
     <string name="menu_cfp">CFPs</string>
     <string name="menu_login">帳號管理</string>
 
+    <string name="plc_hlder">waiting...</string>
+
     <!--首頁-->
     <string name="welcome">Welcome!</string>
     <string name="intro">WikiCFP is a semantic wiki for Calls For Papers in science and technology fields. There are about 50,000 CFPs on WikiCFP. Over 100,000 researchers use WikiCFP each month. </string>
@@ -47,4 +49,12 @@
     <!--設定-->
     <string name="themeLBL">主題</string>
     <string name="DKmode">黑暗模式</string>
+
+    <!--CFP-->
+    <string name="CFPtimeLBL">Time : </string>
+    <string name="CFPdeadlineLBL">Deadline : </string>
+    <string name="CFPlinkLBL">Link : </string>
+    <string name="CFPcategoryLBL">Categories : </string>
+    <string name="CFPLBL">Call For Papers</string>
+    <string name="CFPrelatedLBL">Related Resources</string>
 </resources>

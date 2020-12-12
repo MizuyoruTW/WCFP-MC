@@ -113,7 +113,7 @@ public class CFPsFragment extends Fragment {
     private void getCFPList() {
         new Thread(() -> {
             try {
-                Document data = Jsoup.connect(CategoryURL + "&page=" + String.valueOf(page)).get();
+                Document data = Jsoup.connect(CategoryURL + "&page=" + String.valueOf(page)).timeout(5000).get();
                 Elements table = data.select("tbody").get(5).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {
                     Elements first_row = table.get(i).select("td");
@@ -124,11 +124,13 @@ public class CFPsFragment extends Fragment {
                     }
                     CFP newCFP=new CFP();
                     newCFP.setEvent(first_row.first().selectFirst("a").text());
-                    newCFP.setURL(first_row.first().selectFirst("a").attr("href"));
+                    newCFP.setURL("http://wikicfp.com"+first_row.first().selectFirst("a").attr("href"));
                     newCFP.setName(first_row.get(1).text());
                     newCFP.setTime(second_row.get(0).text());
                     newCFP.setDeadline(second_row.get(2).text());
-                    CFPList.add(newCFP);
+                    if(!CFPList.contains(newCFP)) {
+                        CFPList.add(newCFP);
+                    }
                 }
                 Message msg = new Message();
                 msg.what = 1;

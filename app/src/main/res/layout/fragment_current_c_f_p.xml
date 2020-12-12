@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    tools:context=".ui.CurrentCFPFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/CFPevent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/ismylist"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <CheckBox
+            android:id="@+id/ismylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/CFPname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ismylist" />
+
+        <TextView
+            android:id="@+id/CFPtimeLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CFPtimeLBL"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPname" />
+
+        <TextView
+            android:id="@+id/CFPtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/CFPtimeLBL"
+            app:layout_constraintLeft_toRightOf="@id/CFPtimeLBL" />
+
+        <TextView
+            android:id="@+id/CFPdeadtimeLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CFPdeadlineLBL"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPtimeLBL" />
+
+        <TextView
+            android:id="@+id/CFPdeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/CFPdeadtimeLBL"
+            app:layout_constraintLeft_toRightOf="@id/CFPdeadtimeLBL" />
+
+        <TextView
+            android:id="@+id/CFPlinkLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CFPlinkLBL"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPdeadtimeLBL" />
+
+        <TextView
+            android:id="@+id/CFPlink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/CFPlinkLBL"
+            app:layout_constraintLeft_toRightOf="@id/CFPlinkLBL" />
+
+        <TextView
+            android:id="@+id/CFPcategoryLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CFPcategoryLBL"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPlinkLBL" />
+
+        <LinearLayout
+            android:id="@+id/CFPcategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toRightOf="@id/CFPcategoryLBL"
+            app:layout_constraintTop_toTopOf="@id/CFPcategoryLBL">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/CFPLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/CFPLBL"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPcategory" />
+
+        <TextView
+            android:id="@+id/CFPcontent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/plc_hlder"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPLBL" />
+
+        <TextView
+            android:id="@+id/CFPrelatedLBL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CFPrelatedLBL"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPcontent" />
+
+        <LinearLayout
+            android:id="@+id/CFPrelated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/CFPrelatedLBL"></LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

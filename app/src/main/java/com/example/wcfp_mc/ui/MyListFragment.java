@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class MyListFragment extends Fragment {
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -113,7 +114,6 @@ public class MyListFragment extends Fragment {
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
                 if (!recyclerView.canScrollVertically(1)) {
                     ++page;
-                    final AppCompatActivity act = (AppCompatActivity) getActivity();
                     getList();
                 }
             }
@@ -143,11 +143,13 @@ public class MyListFragment extends Fragment {
                     }
                     CFP newCFP=new CFP();
                     newCFP.setEvent(first_row.first().selectFirst("a").text());
-                    newCFP.setURL(first_row.first().selectFirst("a").attr("href"));
+                    newCFP.setURL("http://wikicfp.com"+first_row.first().selectFirst("a").attr("href"));
                     newCFP.setName(first_row.get(1).text());
                     newCFP.setTime(second_row.get(0).text());
                     newCFP.setDeadline(second_row.get(2).text());
-                    CFPList.add(newCFP);
+                    if(!CFPList.contains(newCFP)) {
+                        CFPList.add(newCFP);
+                    }
                 }
                 Message msg = new Message();
                 msg.what = 1;

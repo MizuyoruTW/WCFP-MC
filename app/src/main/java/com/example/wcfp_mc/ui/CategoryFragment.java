@@ -126,7 +126,7 @@ public class CategoryFragment extends Fragment {
         String url = "http://www.wikicfp.com/cfp/allcat?sortby=0";
         new Thread(() -> {
             try {
-                Document data = Jsoup.connect(url).get();
+                Document data = Jsoup.connect(url).timeout(5000).get();
                 Elements table = data.select("tbody").get(3).select("tr");
                 for (int i = 3; i < table.size(); ++i) {
                     Elements row = table.get(i).select("td");

@@ -28,16 +28,21 @@
         android:label="@string/menu_category"
         tools:layout="@layout/fragment_category">
         <action
-            android:id="@+id/action_to_cfp"
-            app:destination="@id/nav_cfp">
+            android:id="@+id/action_to_cfps"
+            app:destination="@id/nav_cfps">
         </action>
     </fragment>
 
     <fragment
-        android:id="@+id/nav_cfp"
+        android:id="@+id/nav_cfps"
         android:name="com.example.wcfp_mc.ui.CFPsFragment"
         android:label="@string/menu_cfp"
-        tools:layout="@layout/fragment_c_f_ps" />
+        tools:layout="@layout/fragment_c_f_ps" >
+        <action
+            android:id="@+id/action_to_cfp"
+            app:destination="@id/nav_cfp">
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_login"
@@ -55,7 +60,30 @@
         android:id="@+id/nav_mylist"
         android:name="com.example.wcfp_mc.ui.MyListFragment"
         android:label="@string/menu_mylist"
-        tools:layout="@layout/fragment_my_list" />
+        tools:layout="@layout/fragment_my_list" >
+        <action
+            android:id="@+id/action_to_cfp"
+            app:destination="@id/nav_cfp">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_cfp"
+        android:name="com.example.wcfp_mc.ui.CurrentCFPFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_current_c_f_p" >
+        <action
+            android:id="@+id/action_to_cfp"
+            app:destination="@id/nav_cfp">
+        </action>
+        <action
+            android:id="@+id/action_to_cfps"
+            app:destination="@id/nav_cfps"
+            app:popUpTo="@id/nav_category"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+
     <action
         android:id="@+id/action_to_login"
         app:destination="@id/nav_login"
