@@ -9,6 +9,7 @@
     <string name="menu_about">關於</string>
     <string name="menu_home">首頁</string>
     <string name="menu_category">類別</string>
+    <string name="menu_mylist">我的最愛</string>
     <string name="menu_cfp">CFPs</string>
     <string name="menu_login">帳號管理</string>
 

@@ -75,6 +75,11 @@ public class LoginFragment extends Fragment {
             if(getActivity().getCurrentFocus()!=null) {
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             }
+            final AppCompatActivity act = (AppCompatActivity) getActivity();
+            if (act.getSupportActionBar() != null) {
+                ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
+            }
             login(account.getText().toString(), password.getText().toString());
         });
         forgot.setMovementMethod(LinkMovementMethod.getInstance());
@@ -127,6 +132,7 @@ public class LoginFragment extends Fragment {
                 String request = "http://wikicfp.com/cfp/servlet/user.regin";
                 URL url = new URL(request);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(3000);
                 conn.setDoOutput(true);
                 conn.setInstanceFollowRedirects(false);
                 conn.setRequestMethod("POST");

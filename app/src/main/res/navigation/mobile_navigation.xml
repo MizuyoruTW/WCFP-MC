@@ -51,6 +51,11 @@
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_logout" />
 
+    <fragment
+        android:id="@+id/nav_mylist"
+        android:name="com.example.wcfp_mc.ui.MyListFragment"
+        android:label="@string/menu_mylist"
+        tools:layout="@layout/fragment_my_list" />
     <action
         android:id="@+id/action_to_login"
         app:destination="@id/nav_login"
