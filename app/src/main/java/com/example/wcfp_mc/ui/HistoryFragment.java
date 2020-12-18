@@ -1,5 +1,7 @@
 package com.example.wcfp_mc.ui;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.wcfp_mc.CFP;
+import com.example.wcfp_mc.CFPDBHelper;
 import com.example.wcfp_mc.CFPListAdapter;
-import com.example.wcfp_mc.Category;
-import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,45 +31,35 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
- */
-public class CFPsFragment extends Fragment {
-    private final ArrayList<CFP> CFPList = new ArrayList<>();
-    private  String CategoryURL="";
+public class HistoryFragment extends Fragment {
+
+    private  SQLiteDatabase db;
+    private ArrayList<CFP> CFPList =new ArrayList<>();
     private CFPListAdapter CLA;
     private Handler handler;
-    private int page=1;
 
 
-
-    public CFPsFragment() {
-        // Required empty public constructor
+    public HistoryFragment() {
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null) {
-            CategoryURL = getArguments().getString("url");
-        }
+        CFPDBHelper dbHelper=new CFPDBHelper(getContext());
+        db=dbHelper.getReadableDatabase();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_c_f_ps, container, false);
+        return inflater.inflate(R.layout.fragment_history, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        if(getActivity()!=null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
-        }
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -86,53 +77,32 @@ public class CFPsFragment extends Fragment {
                 }
             }
         };
-
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.cfp_list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.historylist);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         CLA = new CFPListAdapter(CFPList,getContext());
         recyclerView.setAdapter(CLA);
-        recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
-            if (!recyclerView.canScrollVertically(1)) {
-                ++page;
-                getCFPList();
-            }
-        });
-        if(page==1) {
-            getCFPList();
-        }
+        getHistory();
     }
 
-    private void getCFPList(){
-        final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        getCFPListBackground();
-    }
-
-    private void getCFPListBackground() {
+    private void getHistory() {
         new Thread(() -> {
             try {
-                Document data = Jsoup.connect(CategoryURL + "&page=" + page).timeout(5000).get();
-                Elements table = data.select("tbody").get(5).select("tr");
-                for (int i = 1; i < table.size(); i+=2) {
-                    Elements first_row = table.get(i).select("td");
-                    Elements second_row = table.get(i+1).select("td");
-                    if(first_row.first().text().equals("Expired CFPs")){
-                        --i;
-                        continue;
-                    }
-                    CFP newCFP=new CFP();
-                    newCFP.setEvent(first_row.first().selectFirst("a").text());
-                    newCFP.setURL("http://wikicfp.com"+first_row.first().selectFirst("a").attr("href"));
-                    newCFP.setName(first_row.get(1).text());
-                    newCFP.setTime(second_row.get(0).text());
-                    newCFP.setDeadline(second_row.get(2).text());
-                    CFPList.add(newCFP);
+                CFPList.clear();
+                Cursor c = db.rawQuery("select * from history",null);
+                if(c.getCount()>0){
+                    c.moveToLast();
+                   do{
+                        CFP newcfp=new CFP();
+                        newcfp.setEvent(c.getString(1));
+                        newcfp.setName(c.getString(2));
+                        newcfp.setURL(c.getString(3));
+                        newcfp.setTime(c.getString(4));
+                        newcfp.setDeadline(c.getString(5));
+                        CFPList.add(newcfp);
+                    } while(c.moveToPrevious());
                 }
                 Message msg = new Message();
                 msg.what = 1;
@@ -146,5 +116,4 @@ public class CFPsFragment extends Fragment {
         }).start();
 
     }
-
 }

@@ -88,7 +88,7 @@ public class MyListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        CLA = new CFPListAdapter(CFPList);
+        CLA = new CFPListAdapter(CFPList,getContext());
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
             if (!recyclerView.canScrollVertically(1)) {

@@ -12,6 +12,7 @@
     <string name="menu_mylist">我的最愛</string>
     <string name="menu_cfp">CFPs</string>
     <string name="menu_login">帳號管理</string>
+    <string name="menu_history">歷史紀錄</string>
 
     <string name="plc_hlder">waiting...</string>
 

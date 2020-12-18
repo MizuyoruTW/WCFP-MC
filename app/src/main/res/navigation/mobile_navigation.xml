@@ -84,6 +84,17 @@
         </action>
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.example.wcfp_mc.ui.HistoryFragment"
+        android:label="@string/menu_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_to_cfp"
+            app:destination="@id/nav_cfp">
+        </action>
+    </fragment>
+
     <action
         android:id="@+id/action_to_login"
         app:destination="@id/nav_login"
