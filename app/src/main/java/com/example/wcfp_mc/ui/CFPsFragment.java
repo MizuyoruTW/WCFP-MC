@@ -100,7 +100,9 @@ public class CFPsFragment extends Fragment {
                 getCFPList();
             }
         });
-        getCFPList();
+        if(page==1) {
+            getCFPList();
+        }
     }
 
     private void getCFPList(){
@@ -115,7 +117,6 @@ public class CFPsFragment extends Fragment {
     private void getCFPListBackground() {
         new Thread(() -> {
             try {
-                CFPList.clear();
                 Document data = Jsoup.connect(CategoryURL + "&page=" + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(5).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {

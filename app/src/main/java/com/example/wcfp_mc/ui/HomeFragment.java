@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,7 @@ public class HomeFragment extends Fragment {
         ImageButton FB = (ImageButton)view.findViewById(R.id.FBlogo);
         ImageButton Twitter = (ImageButton) view.findViewById(R.id.TTlogo);
         ImageButton Linkedin=(ImageButton)view.findViewById(R.id.LIlogo);
-        ImageButton homebtn=(ImageButton)view.findViewById(R.id.homebtn);
+        ImageView homebtn=(ImageView) view.findViewById(R.id.imageView2);
 
         FB.setOnClickListener(view1 -> {
             Intent intent=new Intent();

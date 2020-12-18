@@ -49,6 +49,9 @@ public class CurrentCFPFragment extends Fragment {
     public static final String PREFS_NAME = "MyPrefsFile";
     private boolean isloading = false;
 
+    private String copyownerid="";
+    private String eventid="";
+
     public CurrentCFPFragment() {
         // Required empty public constructor
     }
@@ -85,6 +88,7 @@ public class CurrentCFPFragment extends Fragment {
                 switch (msg.what) {
                     case 2:
                         Toast.makeText(getContext(), "操作完成", Toast.LENGTH_LONG).show();
+                        getContent();
                         break;
                     case 1:
                         showResult(view);
@@ -172,6 +176,8 @@ public class CurrentCFPFragment extends Fragment {
                     newCFP.setName(row.selectFirst("td").text().replace(newCFP.getEvent(), ""));
                     related.add(newCFP);
                 }
+                copyownerid=data.selectFirst("input[name='copyownerid']").attr("value");
+                eventid=data.selectFirst("input[name='eventid']").attr("value");
                 Message msg = new Message();
                 msg.what = 1;
                 handler.sendMessage(msg);
@@ -188,9 +194,9 @@ public class CurrentCFPFragment extends Fragment {
         isloading = true;
         new Thread(() -> {
             try {
-                related.clear();
-                categories.clear();
-                Jsoup.connect(url.replace("event.showcfp?", "event.copycfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
+                String requesturl="http://wikicfp.com/cfp/servlet/event.showcfp?eventid="+eventid+ "&copyownerid="+copyownerid;
+                Document doc = Jsoup.connect(requesturl.replace("event.showcfp?", "event.copycfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
+                System.out.println(doc.toString());
                 Message msg = new Message();
                 msg.what = 2;
                 handler.sendMessage(msg);
@@ -206,9 +212,8 @@ public class CurrentCFPFragment extends Fragment {
     private void delfromMyList() {
         new Thread(() -> {
             try {
-                related.clear();
-                categories.clear();
-                Jsoup.connect(url.replace("event.showcfp?", "event.delcfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
+                String requesturl="http://wikicfp.com/cfp/servlet/event.showcfp?eventid="+eventid+ "&copyownerid="+copyownerid;
+                Jsoup.connect(requesturl.replace("event.showcfp?", "event.delcfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
                 Message msg = new Message();
                 msg.what = 2;
                 handler.sendMessage(msg);
@@ -222,7 +227,11 @@ public class CurrentCFPFragment extends Fragment {
     }
 
     private void showResult(View view) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(event);
+        if(getActivity()!=null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(event);
+        }else{
+            return;
+        }
         TextView textView = view.findViewById(R.id.CFPevent);
         CheckBox checkBox = view.findViewById(R.id.ismylist);
         LinearLayout linearLayout = view.findViewById(R.id.CFPrelated);

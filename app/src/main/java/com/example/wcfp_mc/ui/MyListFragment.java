@@ -96,7 +96,7 @@ public class MyListFragment extends Fragment {
                 getList();
             }
         });
-        if(!MyListURL.isEmpty()){
+        if(!MyListURL.isEmpty() && page==1){
             getList();
         }
     }
@@ -128,9 +128,9 @@ public class MyListFragment extends Fragment {
                     newCFP.setName(first_row.get(1).text());
                     newCFP.setTime(second_row.get(0).text());
                     newCFP.setDeadline(second_row.get(2).text());
-                    if(!CFPList.contains(newCFP)) {
-                        CFPList.add(newCFP);
-                    }
+                        if(!CFPList.contains(newCFP)) {
+                            CFPList.add(newCFP);
+                        }
                 }
                 Message msg = new Message();
                 msg.what = 1;
