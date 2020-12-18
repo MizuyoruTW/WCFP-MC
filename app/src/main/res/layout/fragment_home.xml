@@ -7,8 +7,8 @@
     android:background="?attr/backgroundColor"
     tools:context=".ui.HomeFragment">
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <ImageButton
+        android:id="@+id/homebtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"

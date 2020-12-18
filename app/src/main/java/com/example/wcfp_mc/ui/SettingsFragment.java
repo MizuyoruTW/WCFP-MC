@@ -40,14 +40,16 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        Switch DKmodeTG=(Switch)view.findViewById(R.id.dark_mode_switch);
-        DKmodeTG.setChecked(settings.getBoolean("DarkMode",false));
-        DKmodeTG.setOnClickListener(view1 -> {
-            editor.putBoolean("DarkMode",DKmodeTG.isChecked());
-            editor.apply();
-            getActivity().recreate();
-        });
+        if(getActivity()!=null) {
+            SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            Switch DKmodeTG = (Switch) view.findViewById(R.id.dark_mode_switch);
+            DKmodeTG.setChecked(settings.getBoolean("DarkMode", false));
+            DKmodeTG.setOnClickListener(view1 -> {
+                editor.putBoolean("DarkMode", DKmodeTG.isChecked());
+                editor.apply();
+                getActivity().recreate();
+            });
+        }
     }
 }

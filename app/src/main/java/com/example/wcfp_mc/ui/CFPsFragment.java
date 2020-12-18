@@ -51,7 +51,9 @@ public class CFPsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CategoryURL=getArguments().getString("url");
+        if(getArguments()!=null) {
+            CategoryURL = getArguments().getString("url");
+        }
     }
 
     @Override
@@ -64,8 +66,9 @@ public class CFPsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
-
+        if(getActivity()!=null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
+        }
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {

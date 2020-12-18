@@ -27,6 +27,7 @@ public class HomeFragment extends Fragment {
         ImageButton FB = (ImageButton)view.findViewById(R.id.FBlogo);
         ImageButton Twitter = (ImageButton) view.findViewById(R.id.TTlogo);
         ImageButton Linkedin=(ImageButton)view.findViewById(R.id.LIlogo);
+        ImageButton homebtn=(ImageButton)view.findViewById(R.id.homebtn);
 
         FB.setOnClickListener(view1 -> {
             Intent intent=new Intent();
@@ -44,6 +45,12 @@ public class HomeFragment extends Fragment {
             Intent intent=new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse( "http://www.linkedin.com/shareArticle?mini=true&url=http://www.wikicfp.com"));
+            startActivity(intent);
+        });
+        homebtn.setOnClickListener(view1 -> {
+            Intent intent=new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse( "http://www.wikicfp.com"));
             startActivity(intent);
         });
     }

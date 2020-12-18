@@ -1,7 +1,6 @@
 package com.example.wcfp_mc;
 
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -17,8 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.wcfp_mc.ui.CFPsFragment;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -96,17 +93,14 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 db.delete("favorates", "name='"+localDataSet.get(position).getName()+"'",null);
             }
         });
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity act=(MainActivity) view.getContext();
-                NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
-                Bundle bundle = new Bundle();
-                bundle.putString("name", localDataSet.get(position).getName());
-                bundle.putString("url", localDataSet.get(position).getUrl());
+        viewHolder.itemView.setOnClickListener(view -> {
+            MainActivity act=(MainActivity) view.getContext();
+            NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("name", localDataSet.get(position).getName());
+            bundle.putString("url", localDataSet.get(position).getUrl());
 
-                navController.navigate(R.id.action_to_cfps,bundle);
-            }
+            navController.navigate(R.id.action_to_cfps,bundle);
         });
     }
 
