@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
@@ -63,8 +64,10 @@ public class CurrentCFPFragment extends Fragment {
         if (getArguments() != null) {
             url = getArguments().getString("url", "");
         }
-        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-        cookie = settings.getString("cookie_value", "");
+        if(getActivity()!=null) {
+            SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+            cookie = settings.getString("cookie_value", "");
+        }
     }
 
     @Override
@@ -85,6 +88,9 @@ public class CurrentCFPFragment extends Fragment {
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 isloading = false;
+                if(getContext()==null){
+                    return;
+                }
                 switch (msg.what) {
                     case 2:
                         Toast.makeText(getContext(), "操作完成", Toast.LENGTH_LONG).show();
@@ -129,7 +135,7 @@ public class CurrentCFPFragment extends Fragment {
 
     private void getContent() {
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar = (ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -212,6 +218,7 @@ public class CurrentCFPFragment extends Fragment {
     private void delfromMyList() {
         new Thread(() -> {
             try {
+                isloading = true;
                 String requesturl="http://wikicfp.com/cfp/servlet/event.showcfp?eventid="+eventid+ "&copyownerid="+copyownerid;
                 Jsoup.connect(requesturl.replace("event.showcfp?", "event.delcfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
                 Message msg = new Message();
@@ -228,7 +235,10 @@ public class CurrentCFPFragment extends Fragment {
 
     private void showResult(View view) {
         if(getActivity()!=null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(event);
+            ActionBar actionBar=((AppCompatActivity) getActivity()).getSupportActionBar();
+            if(actionBar!=null) {
+                actionBar.setTitle(event);
+            }
         }else{
             return;
         }

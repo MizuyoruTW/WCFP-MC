@@ -69,8 +69,8 @@ public class LoginFragment extends Fragment {
         TextView password = view.findViewById(R.id.password);
         Button submit = view.findViewById(R.id.submitlogin);
         submit.setOnClickListener(view1 -> {
-            InputMethodManager imm =  (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(getActivity().getCurrentFocus()!=null) {
+            if(getActivity()!=null && getActivity().getCurrentFocus()!=null) {
+                InputMethodManager imm =  (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             }
             final AppCompatActivity act = (AppCompatActivity) getActivity();
@@ -90,6 +90,9 @@ public class LoginFragment extends Fragment {
                 if (act != null && act.getSupportActionBar() != null) {
                     ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
+                }
+                if(getContext()==null){
+                    return;
                 }
                 submit.setEnabled(true);
                 switch (msg.what) {

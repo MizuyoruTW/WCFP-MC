@@ -3,6 +3,7 @@ package com.example.wcfp_mc.ui;
 import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -67,6 +68,7 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
+        Activity activity=getActivity();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.catagory_list);
         EditText editText = (EditText) view.findViewById(R.id.editText);
         ImageButton button = (ImageButton) view.findViewById(R.id.imageButton);
@@ -86,7 +88,9 @@ public class CategoryFragment extends Fragment {
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        if(getContext()!=null) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        }
         CLA = new CategoryListAdapter(CategoryList,getContext());
         recyclerView.setAdapter(CLA);
 
@@ -104,13 +108,13 @@ public class CategoryFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
         button.setOnClickListener(v -> {
-            hideSoftKeyboard(getActivity());
+            if(activity!=null) hideSoftKeyboard(activity);
             editText.clearFocus();
             filter = editText.getText().toString();
             ListFilter();
         });
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -163,7 +167,7 @@ public class CategoryFragment extends Fragment {
 
     private void ListFilter() {
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -183,13 +187,13 @@ public class CategoryFragment extends Fragment {
         }
         CategoryList.sort(comp);
         CLA.notifyDataSetChanged();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
-    private static void hideSoftKeyboard(Activity activity) {
+    private static void hideSoftKeyboard(@NonNull Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);

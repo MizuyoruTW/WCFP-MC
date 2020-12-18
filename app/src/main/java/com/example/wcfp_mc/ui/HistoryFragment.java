@@ -3,13 +3,6 @@ package com.example.wcfp_mc.ui;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -19,22 +12,25 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wcfp_mc.CFP;
 import com.example.wcfp_mc.CFPDBHelper;
 import com.example.wcfp_mc.CFPListAdapter;
 import com.example.wcfp_mc.R;
 
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
     private  SQLiteDatabase db;
-    private ArrayList<CFP> CFPList =new ArrayList<>();
+    private final ArrayList<CFP> CFPList =new ArrayList<>();
     private CFPListAdapter CLA;
     private Handler handler;
 
@@ -81,7 +77,9 @@ public class HistoryFragment extends Fragment {
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        if(getContext()!=null) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        }
         CLA = new CFPListAdapter(CFPList,getContext());
         recyclerView.setAdapter(CLA);
         getHistory();
@@ -104,6 +102,7 @@ public class HistoryFragment extends Fragment {
                         CFPList.add(newcfp);
                     } while(c.moveToPrevious());
                 }
+                c.close();
                 Message msg = new Message();
                 msg.what = 1;
                 handler.sendMessage(msg);

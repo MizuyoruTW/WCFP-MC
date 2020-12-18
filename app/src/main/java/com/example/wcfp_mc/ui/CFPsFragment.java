@@ -1,13 +1,7 @@
 package com.example.wcfp_mc.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -17,10 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.wcfp_mc.CFP;
 import com.example.wcfp_mc.CFPListAdapter;
-import com.example.wcfp_mc.Category;
-import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +39,7 @@ public class CFPsFragment extends Fragment {
     private CFPListAdapter CLA;
     private Handler handler;
     private int page=1;
+    private boolean backfromresume=false;
 
 
 
@@ -66,8 +66,12 @@ public class CFPsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        if(getActivity()!=null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
+        Activity activity=getActivity();
+        if(activity!=null  ) {
+            ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
+            if (actionBar != null && getArguments()!=null) {
+               actionBar.setTitle(getArguments().getString("name"));
+            }
         }
         handler = new Handler(Looper.getMainLooper()) {
             @Override
@@ -91,7 +95,9 @@ public class CFPsFragment extends Fragment {
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        if(getContext()!=null) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        }
         CLA = new CFPListAdapter(CFPList,getContext());
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
@@ -100,14 +106,20 @@ public class CFPsFragment extends Fragment {
                 getCFPList();
             }
         });
-        if(page==1) {
+        if(!backfromresume) {
             getCFPList();
         }
     }
 
+    @Override
+    public void onResume(){
+        backfromresume=true;
+        super.onResume();
+    }
+
     private void getCFPList(){
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }

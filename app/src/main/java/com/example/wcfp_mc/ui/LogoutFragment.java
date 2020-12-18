@@ -43,10 +43,12 @@ public class LogoutFragment extends Fragment {
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, 0).edit();
-                    editor.putString("user_name","");
-                    editor.putString("cookie_value","");
-                    editor.apply();
+                    if(getActivity()!=null) {
+                        SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, 0).edit();
+                        editor.putString("user_name", "");
+                        editor.putString("cookie_value", "");
+                        editor.apply();
+                    }
                     NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                     TextView textView= navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
@@ -61,9 +63,11 @@ public class LogoutFragment extends Fragment {
         };
 
         button.setOnClickListener(view1 -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("你確定要登出嗎?").setPositiveButton("是", dialogClickListener)
-                    .setNegativeButton("否", dialogClickListener).show();
+            if(getContext()!=null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("你確定要登出嗎?").setPositiveButton("是", dialogClickListener)
+                        .setNegativeButton("否", dialogClickListener).show();
+            }
         });
     }
 }

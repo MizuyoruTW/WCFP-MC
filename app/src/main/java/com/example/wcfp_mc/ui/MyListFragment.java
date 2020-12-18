@@ -35,6 +35,7 @@ public class MyListFragment extends Fragment {
     private CFPListAdapter CLA;
     private Handler handler;
     private int page;
+    private boolean backfromresume=false;
 
     public MyListFragment() {
         // Required empty public constructor
@@ -44,14 +45,16 @@ public class MyListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         page=1;
-        SharedPreferences settings = getActivity(). getSharedPreferences(PREFS_NAME, 0);
-        String cookie=settings.getString("cookie_value","");
-        if(cookie.isEmpty()){
-            Toast.makeText(getContext(),"請先登入",Toast.LENGTH_LONG).show();
-        }else{
-            String ownerid=cookie.split("%")[0];
-            System.out.println("owner id: "+ownerid);
-            MyListURL=String.format("http://wikicfp.com/cfp/servlet/event.showlist?lownerid=%1$s&ltype=w&page=",ownerid);
+        if(getActivity()!=null) {
+            SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+            String cookie = settings.getString("cookie_value", "");
+            if (cookie.isEmpty()) {
+                Toast.makeText(getContext(), "請先登入", Toast.LENGTH_LONG).show();
+            } else {
+                String ownerid = cookie.split("%")[0];
+                System.out.println("owner id: " + ownerid);
+                MyListURL = String.format("http://wikicfp.com/cfp/servlet/event.showlist?lownerid=%1$s&ltype=w&page=", ownerid);
+            }
         }
     }
 
@@ -87,7 +90,9 @@ public class MyListFragment extends Fragment {
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        if(getContext()!=null) {
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        }
         CLA = new CFPListAdapter(CFPList,getContext());
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
@@ -96,14 +101,20 @@ public class MyListFragment extends Fragment {
                 getList();
             }
         });
-        if(!MyListURL.isEmpty() && page==1){
+        if(!MyListURL.isEmpty() && !backfromresume){
             getList();
         }
     }
 
+    @Override
+    public void onResume(){
+        backfromresume=true;
+        super.onResume();
+    }
+
     private void getList(){
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act.getSupportActionBar() != null) {
+        if (act!=null && act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -113,7 +124,7 @@ public class MyListFragment extends Fragment {
     private void getListBackground(){
         new Thread(() -> {
             try {
-                Document data = Jsoup.connect(MyListURL  + String.valueOf(page)).timeout(5000).get();
+                Document data = Jsoup.connect(MyListURL  + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(8).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {
                     Elements first_row = table.get(i).select("td");

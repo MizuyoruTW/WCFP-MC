@@ -83,22 +83,19 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
         viewHolder.getTimeTextView().setText(localDataSet.get(position).getTime());
         viewHolder.getDeadlineTextView().setText(localDataSet.get(position).getDeadline());
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContentValues cv = new ContentValues();
-                cv.put("event",localDataSet.get(position).getEvent());
-                cv.put("name",localDataSet.get(position).getName());
-                cv.put("time",localDataSet.get(position).getTime());
-                cv.put("url",localDataSet.get(position).getURL());
-                cv.put("deadline",localDataSet.get(position).getDeadline());
-                db.insert("history",null,cv);
-                MainActivity act=(MainActivity) view.getContext();
-                NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
-                Bundle bundle = new Bundle();
-                bundle.putString("url", localDataSet.get(position).getURL());
-                navController.navigate(R.id.action_to_cfp,bundle);
-            }
+        viewHolder.itemView.setOnClickListener(view -> {
+            ContentValues cv = new ContentValues();
+            cv.put("event",localDataSet.get(position).getEvent());
+            cv.put("name",localDataSet.get(position).getName());
+            cv.put("time",localDataSet.get(position).getTime());
+            cv.put("url",localDataSet.get(position).getURL());
+            cv.put("deadline",localDataSet.get(position).getDeadline());
+            db.insert("history",null,cv);
+            MainActivity act=(MainActivity) view.getContext();
+            NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("url", localDataSet.get(position).getURL());
+            navController.navigate(R.id.action_to_cfp,bundle);
         });
     }
 
