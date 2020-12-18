@@ -86,6 +86,7 @@
             android:id="@+id/CFPlink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
             android:text="@string/plc_hlder"
             android:textSize="22sp"
             app:layout_constraintBaseline_toBaselineOf="@id/CFPlinkLBL"
@@ -98,7 +99,7 @@
             android:text="@string/CFPcategoryLBL"
             android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/CFPlinkLBL" />
+            app:layout_constraintTop_toBottomOf="@id/CFPlink" />
 
         <LinearLayout
             android:id="@+id/CFPcategory"

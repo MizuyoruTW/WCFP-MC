@@ -18,8 +18,6 @@ import com.example.wcfp_mc.R;
 import com.google.android.material.navigation.NavigationView;
 
 public class LogoutFragment extends Fragment {
-
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -64,8 +62,8 @@ public class LogoutFragment extends Fragment {
 
         button.setOnClickListener(view1 -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            builder.setMessage("你確定要登出嗎?").setPositiveButton("是", dialogClickListener)
+                    .setNegativeButton("否", dialogClickListener).show();
         });
     }
 }

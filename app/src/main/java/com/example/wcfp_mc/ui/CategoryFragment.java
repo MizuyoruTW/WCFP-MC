@@ -28,6 +28,7 @@ import com.example.wcfp_mc.Category;
 import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -55,15 +56,20 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getCategoryList();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_category, container, false);
+        return inflater.inflate(R.layout.fragment_category, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.catagory_list);
+        EditText editText = (EditText) view.findViewById(R.id.editText);
+        ImageButton button = (ImageButton) view.findViewById(R.id.imageButton);
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -77,7 +83,6 @@ public class CategoryFragment extends Fragment {
                 }
             }
         };
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.catagory_list);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
@@ -85,12 +90,9 @@ public class CategoryFragment extends Fragment {
         CLA = new CategoryListAdapter(CategoryList,getContext());
         recyclerView.setAdapter(CLA);
 
-        EditText editText = (EditText) root.findViewById(R.id.editText);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -99,12 +101,9 @@ public class CategoryFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
+            public void afterTextChanged(Editable editable) {}
         });
-        ImageButton button = (ImageButton) root.findViewById(R.id.imageButton);
-        button.setOnClickListener(view -> {
+        button.setOnClickListener(v -> {
             hideSoftKeyboard(getActivity());
             editText.clearFocus();
             filter = editText.getText().toString();
@@ -115,11 +114,9 @@ public class CategoryFragment extends Fragment {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
-        setMenu(root);
-        return root;
+        getCategoryList();
+        setMenu(view);
     }
-
-
 
     private void getCategoryList() {
         originalCL.clear();
@@ -152,21 +149,15 @@ public class CategoryFragment extends Fragment {
     }
 
     private void setMenu(View root) {
-
         final ImageButton imageButton = root.findViewById(R.id.imageButton2);
-
         final PopupMenu dropDownMenu = new PopupMenu(getContext(), imageButton);
-
         dropDownMenu.inflate(R.menu.sort);
-
-
         dropDownMenu.setOnMenuItemClickListener(item -> {
             item.setChecked(!item.isChecked());
             sortby = item.getItemId();
             ListFilter();
             return true;
         });
-
         imageButton.setOnClickListener(v -> dropDownMenu.show());
     }
 

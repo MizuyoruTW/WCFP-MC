@@ -80,12 +80,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+        CheckBox checkBox=viewHolder.getCheckBox();
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
         viewHolder.getCFPTextView().setText(String.format(Locale.getDefault(),"%1$d CFPs",localDataSet.get(position).getCFPs()));
-        CheckBox checkBox=viewHolder.getCheckBox();
         String sql=String.format(Locale.getDefault(),"SELECT * FROM favorates WHERE name='%1$s'",localDataSet.get(position).getName());
         Cursor c=db.rawQuery(sql,null);
         checkBox.setChecked(c.getCount()>0);

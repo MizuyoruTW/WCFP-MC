@@ -23,6 +23,7 @@ import com.example.wcfp_mc.Category;
 import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -51,15 +52,18 @@ public class CFPsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CategoryURL=getArguments().getString("url");
-        getCFPList();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root;
-        root = inflater.inflate(R.layout.fragment_c_f_ps, container, false);
+
+        return inflater.inflate(R.layout.fragment_c_f_ps, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString("name"));
 
         handler = new Handler(Looper.getMainLooper()) {
@@ -80,40 +84,36 @@ public class CFPsFragment extends Fragment {
             }
         };
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.cfp_list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.cfp_list);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         CLA = new CFPListAdapter(CFPList);
         recyclerView.setAdapter(CLA);
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (!recyclerView.canScrollVertically(1)) {
-                    ++page;
-                    final AppCompatActivity act = (AppCompatActivity) getActivity();
-                    if (act.getSupportActionBar() != null) {
-                        ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-                    getCFPList();
-                }
+        recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
+            if (!recyclerView.canScrollVertically(1)) {
+                ++page;
+                getCFPList();
             }
         });
+        getCFPList();
+    }
 
+    private void getCFPList(){
         final AppCompatActivity act = (AppCompatActivity) getActivity();
         if (act.getSupportActionBar() != null) {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
-        return root;
+        getCFPListBackground();
     }
 
-    private void getCFPList() {
+    private void getCFPListBackground() {
         new Thread(() -> {
             try {
-                Document data = Jsoup.connect(CategoryURL + "&page=" + String.valueOf(page)).timeout(5000).get();
+                CFPList.clear();
+                Document data = Jsoup.connect(CategoryURL + "&page=" + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(5).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {
                     Elements first_row = table.get(i).select("td");
@@ -128,9 +128,7 @@ public class CFPsFragment extends Fragment {
                     newCFP.setName(first_row.get(1).text());
                     newCFP.setTime(second_row.get(0).text());
                     newCFP.setDeadline(second_row.get(2).text());
-                    if(!CFPList.contains(newCFP)) {
-                        CFPList.add(newCFP);
-                    }
+                    CFPList.add(newCFP);
                 }
                 Message msg = new Message();
                 msg.what = 1;

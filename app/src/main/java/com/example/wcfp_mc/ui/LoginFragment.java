@@ -58,10 +58,8 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root;
-        root = inflater.inflate(R.layout.fragment_login, container, false);
 
-        return root;
+        return inflater.inflate(R.layout.fragment_login, container, false);
     }
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
@@ -80,6 +78,7 @@ public class LoginFragment extends Fragment {
                 ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
                 progressBar.setVisibility(View.VISIBLE);
             }
+            submit.setEnabled(false);
             login(account.getText().toString(), password.getText().toString());
         });
         forgot.setMovementMethod(LinkMovementMethod.getInstance());
@@ -92,6 +91,7 @@ public class LoginFragment extends Fragment {
                     ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
+                submit.setEnabled(true);
                 switch (msg.what) {
                     case 1:
                         List<HttpCookie> cookieslist = cookieManager.getCookieStore().getCookies();
@@ -127,11 +127,11 @@ public class LoginFragment extends Fragment {
         new Thread(() -> {
             try {
                 String urlParameters = "accountsel=" + account + "&password=" + password + "&keepin=on&mode=login";
-                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-                int postDataLength = postData.length;
                 String request = "http://wikicfp.com/cfp/servlet/user.regin";
                 URL url = new URL(request);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+                int postDataLength = postData.length;
                 conn.setConnectTimeout(3000);
                 conn.setDoOutput(true);
                 conn.setInstanceFollowRedirects(false);
@@ -142,6 +142,7 @@ public class LoginFragment extends Fragment {
                 conn.setUseCaches(false);
                 DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
                 wr.write(postData);
+                wr.close();
                 conn.getContent();
                 Message msg = new Message();
                 msg.what = 1;

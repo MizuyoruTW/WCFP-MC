@@ -2,15 +2,6 @@ package com.example.wcfp_mc.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,31 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wcfp_mc.CFP;
 import com.example.wcfp_mc.CFPListAdapter;
-import com.example.wcfp_mc.Category;
-import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
-import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.HttpCookie;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 public class MyListFragment extends Fragment {
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -80,9 +64,7 @@ public class MyListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        if(!MyListURL.isEmpty()){
-            getList();
-        }
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mylist);
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -102,22 +84,21 @@ public class MyListFragment extends Fragment {
             }
         };
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mylist);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         CLA = new CFPListAdapter(CFPList);
         recyclerView.setAdapter(CLA);
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (!recyclerView.canScrollVertically(1)) {
-                    ++page;
-                    getList();
-                }
+        recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
+            if (!recyclerView.canScrollVertically(1)) {
+                ++page;
+                getList();
             }
         });
+        if(!MyListURL.isEmpty()){
+            getList();
+        }
     }
 
     private void getList(){

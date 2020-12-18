@@ -59,18 +59,10 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
             return deadlineTV;
         }
     }
-
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
-     */
     public CFPListAdapter(ArrayList<CFP>  dataSet) {
         localDataSet = dataSet;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     @NonNull
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -84,9 +76,6 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         viewHolder.getEventTextView().setText(localDataSet.get(position).getEvent());
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
         viewHolder.getTimeTextView().setText(localDataSet.get(position).getTime());
@@ -103,7 +92,6 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
         });
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return localDataSet.size();

@@ -13,34 +13,39 @@ import androidx.fragment.app.Fragment;
 
 import com.example.wcfp_mc.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class HomeFragment extends Fragment {
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        ImageButton FB = (ImageButton)root.findViewById(R.id.FBlogo);
-        ImageButton Twitter = (ImageButton) root.findViewById(R.id.TTlogo);
-        ImageButton Linkedin=(ImageButton)root.findViewById(R.id.LIlogo);
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
 
-        FB.setOnClickListener(view -> {
+    @Override
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
+        ImageButton FB = (ImageButton)view.findViewById(R.id.FBlogo);
+        ImageButton Twitter = (ImageButton) view.findViewById(R.id.TTlogo);
+        ImageButton Linkedin=(ImageButton)view.findViewById(R.id.LIlogo);
+
+        FB.setOnClickListener(view1 -> {
             Intent intent=new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse( "http://www.facebook.com/sharer.php?u=http://www.wikicfp.com"));
-                            startActivity(intent);
+            startActivity(intent);
         });
-        Twitter.setOnClickListener(view -> {
+        Twitter.setOnClickListener(view1 -> {
             Intent intent=new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse( "http://twitter.com/share?url=http://www.wikicfp.com&text=WikiCFP%20:%20Call%20For%20Papers%20of%20Conferences%20,%20Workshops%20and%20Jounals"));
-           startActivity(intent);
+            startActivity(intent);
         });
-        Linkedin.setOnClickListener(view -> {
+        Linkedin.setOnClickListener(view1 -> {
             Intent intent=new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse( "http://www.linkedin.com/shareArticle?mini=true&url=http://www.wikicfp.com"));
             startActivity(intent);
         });
-        return root;
     }
 
 
