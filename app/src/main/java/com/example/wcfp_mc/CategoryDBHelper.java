@@ -11,6 +11,7 @@ public class CategoryDBHelper extends SQLiteOpenHelper {
 
     public CategoryDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.getReadableDatabase().execSQL("CREATE TABLE IF NOT EXISTS favorates (name text primary key) ");
     }
 
     @Override
