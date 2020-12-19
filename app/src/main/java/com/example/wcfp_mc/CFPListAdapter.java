@@ -1,16 +1,11 @@
 package com.example.wcfp_mc;
 
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,10 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wcfp_mc.ui.CFPsFragment;
-
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHolder> {
 
@@ -40,26 +32,30 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-            eventTV =  view.findViewById(R.id.eventname);
+            eventTV = view.findViewById(R.id.eventname);
             timeTV = view.findViewById(R.id.time);
-            nameTV =  view.findViewById(R.id.name);
-            deadlineTV =  view.findViewById(R.id.deadline);
+            nameTV = view.findViewById(R.id.name);
+            deadlineTV = view.findViewById(R.id.deadline);
         }
 
         public TextView getEventTextView() {
             return eventTV;
         }
+
         public TextView getNameTextView() {
             return nameTV;
         }
+
         public TextView getTimeTextView() {
             return timeTV;
         }
+
         public TextView getDeadlineTextView() {
             return deadlineTV;
         }
     }
-    public CFPListAdapter(ArrayList<CFP>  dataSet, Context context) {
+
+    public CFPListAdapter(ArrayList<CFP> dataSet, Context context) {
         localDataSet = dataSet;
     }
 
@@ -81,11 +77,11 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
         viewHolder.getTimeTextView().setText(localDataSet.get(position).getTime());
         viewHolder.getDeadlineTextView().setText(localDataSet.get(position).getDeadline());
         viewHolder.itemView.setOnClickListener(view -> {
-            MainActivity act=(MainActivity) view.getContext();
+            MainActivity act = (MainActivity) view.getContext();
             NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
             Bundle bundle = new Bundle();
             bundle.putString("url", localDataSet.get(position).getURL());
-            navController.navigate(R.id.action_to_cfp,bundle);
+            navController.navigate(R.id.action_to_cfp, bundle);
         });
     }
 

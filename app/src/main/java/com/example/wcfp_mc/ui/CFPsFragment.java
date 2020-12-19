@@ -35,12 +35,11 @@ import java.util.ArrayList;
  */
 public class CFPsFragment extends Fragment {
     private final ArrayList<CFP> CFPList = new ArrayList<>();
-    private  String CategoryURL="";
+    private String CategoryURL = "";
     private CFPListAdapter CLA;
     private Handler handler;
-    private int page=0;
-    private boolean backfromresume=false;
-
+    private int page = 0;
+    private boolean backfromresume = false;
 
 
     public CFPsFragment() {
@@ -51,7 +50,7 @@ public class CFPsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null) {
+        if (getArguments() != null) {
             CategoryURL = getArguments().getString("url");
         }
     }
@@ -65,20 +64,20 @@ public class CFPsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        Activity activity=getActivity();
-        if(activity!=null  ) {
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+        Activity activity = getActivity();
+        if (activity != null) {
             ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
-            if (actionBar != null && getArguments()!=null) {
-               actionBar.setTitle(getArguments().getString("name"));
+            if (actionBar != null && getArguments() != null) {
+                actionBar.setTitle(getArguments().getString("name"));
             }
         }
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 final AppCompatActivity act = (AppCompatActivity) getActivity();
-                if (act!=null && act.getSupportActionBar() != null) {
-                    ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                if (act != null && act.getSupportActionBar() != null) {
+                    ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 switch (msg.what) {
@@ -91,35 +90,35 @@ public class CFPsFragment extends Fragment {
             }
         };
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.cfp_list);
+        RecyclerView recyclerView = view.findViewById(R.id.cfp_list);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        if(getContext()!=null) {
+        if (getContext() != null) {
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
-        CLA = new CFPListAdapter(CFPList,getContext());
+        CLA = new CFPListAdapter(CFPList, getContext());
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
             if (!recyclerView.canScrollVertically(1)) {
                 getCFPList();
             }
         });
-        if(!backfromresume) {
+        if (!backfromresume) {
             getCFPList();
         }
     }
 
     @Override
-    public void onResume(){
-        backfromresume=true;
+    public void onResume() {
+        backfromresume = true;
         super.onResume();
     }
 
-    private void getCFPList(){
+    private void getCFPList() {
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+        if (act != null && act.getSupportActionBar() != null) {
+            ProgressBar progressBar = act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
         getCFPListBackground();
@@ -131,16 +130,16 @@ public class CFPsFragment extends Fragment {
                 ++page;
                 Document data = Jsoup.connect(CategoryURL + "&page=" + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(5).select("tr");
-                for (int i = 1; i < table.size(); i+=2) {
+                for (int i = 1; i < table.size(); i += 2) {
                     Elements first_row = table.get(i).select("td");
-                    Elements second_row = table.get(i+1).select("td");
-                    if(first_row.first().text().equals("Expired CFPs")){
+                    Elements second_row = table.get(i + 1).select("td");
+                    if (first_row.first().text().equals("Expired CFPs")) {
                         --i;
                         continue;
                     }
-                    CFP newCFP=new CFP();
+                    CFP newCFP = new CFP();
                     newCFP.setEvent(first_row.first().selectFirst("a").text());
-                    newCFP.setURL("http://wikicfp.com"+first_row.first().selectFirst("a").attr("href"));
+                    newCFP.setURL("http://wikicfp.com" + first_row.first().selectFirst("a").attr("href"));
                     newCFP.setName(first_row.get(1).text());
                     newCFP.setTime(second_row.get(0).text());
                     newCFP.setDeadline(second_row.get(2).text());

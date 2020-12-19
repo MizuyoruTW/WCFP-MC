@@ -8,14 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CFPDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Class";
     private static final int DATABASE_VERSION = 2;
+
     public CFPDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.getReadableDatabase().execSQL("CREATE TABLE IF NOT EXISTS history (_id integer  primary key autoincrement,event text,name text, url text,time text, deadline text) ");
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS history (_id integer  primary key autoincrement,event text,name text, url text,time text, deadline text) ");
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS history");

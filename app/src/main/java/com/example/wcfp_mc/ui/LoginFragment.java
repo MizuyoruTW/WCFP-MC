@@ -61,21 +61,22 @@ public class LoginFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
+
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        super.onViewCreated(view,savedInstanceState);
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         TextView forgot = view.findViewById(R.id.forgot);
         TextView account = view.findViewById(R.id.account);
         TextView password = view.findViewById(R.id.password);
         Button submit = view.findViewById(R.id.submitlogin);
         submit.setOnClickListener(view1 -> {
-            if(getActivity()!=null && getActivity().getCurrentFocus()!=null) {
-                InputMethodManager imm =  (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (getActivity() != null && getActivity().getCurrentFocus() != null) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
             }
             final AppCompatActivity act = (AppCompatActivity) getActivity();
             if (act.getSupportActionBar() != null) {
-                ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                ProgressBar progressBar = act.findViewById(R.id.progressBar);
                 progressBar.setVisibility(View.VISIBLE);
             }
             submit.setEnabled(false);
@@ -91,7 +92,7 @@ public class LoginFragment extends Fragment {
                     ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
-                if(getContext()==null){
+                if (getContext() == null) {
                     return;
                 }
                 submit.setEnabled(true);
@@ -105,12 +106,12 @@ public class LoginFragment extends Fragment {
                                 Toast.makeText(getContext(), "歡迎，" + account.getText().toString(), Toast.LENGTH_SHORT).show();
                                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                                 NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                                TextView textView= navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
-                                textView.setText(String.format(Locale.getDefault(),"歡迎，%1$s", account.getText().toString()));
-                                SharedPreferences settings = getActivity(). getSharedPreferences(PREFS_NAME, 0);
+                                TextView textView = navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
+                                textView.setText(String.format(Locale.getDefault(), "歡迎，%1$s", account.getText().toString()));
+                                SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
                                 SharedPreferences.Editor editor = settings.edit();
-                                editor.putString("cookie_value",cookies);
-                                editor.putString("user_name",account.getText().toString());
+                                editor.putString("cookie_value", cookies);
+                                editor.putString("user_name", account.getText().toString());
                                 editor.apply();
                                 login = true;
                                 navController.navigateUp();
@@ -126,6 +127,7 @@ public class LoginFragment extends Fragment {
             }
         };
     }
+
     private void login(String account, String password) {
         new Thread(() -> {
             try {

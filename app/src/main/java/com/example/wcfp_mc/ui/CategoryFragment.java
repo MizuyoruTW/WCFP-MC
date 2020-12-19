@@ -2,14 +2,6 @@ package com.example.wcfp_mc.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,6 +16,13 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wcfp_mc.Category;
 import com.example.wcfp_mc.CategoryListAdapter;
@@ -48,7 +47,7 @@ public class CategoryFragment extends Fragment {
     private Handler handler;
     private String filter = "";
     private int sortby = 0;
-    private boolean backfromresume=false;
+    private boolean backfromresume = false;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -68,11 +67,11 @@ public class CategoryFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        Activity activity=getActivity();
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.catagory_list);
-        EditText editText = (EditText) view.findViewById(R.id.editText);
-        ImageButton button = (ImageButton) view.findViewById(R.id.imageButton);
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+        Activity activity = getActivity();
+        RecyclerView recyclerView = view.findViewById(R.id.catagory_list);
+        EditText editText = view.findViewById(R.id.editText);
+        ImageButton button = view.findViewById(R.id.imageButton);
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -89,15 +88,16 @@ public class CategoryFragment extends Fragment {
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        if(getContext()!=null) {
+        if (getContext() != null) {
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
-        CLA = new CategoryListAdapter(CategoryList,getContext());
+        CLA = new CategoryListAdapter(CategoryList, getContext());
         recyclerView.setAdapter(CLA);
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -106,26 +106,27 @@ public class CategoryFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
         button.setOnClickListener(v -> {
-            if(activity!=null) hideSoftKeyboard(activity);
+            if (activity != null) hideSoftKeyboard(activity);
             editText.clearFocus();
             filter = editText.getText().toString();
             ListFilter();
         });
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+        if (act != null && act.getSupportActionBar() != null) {
+            ProgressBar progressBar = act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
-        if(!backfromresume) getCategoryList();
+        if (!backfromresume) getCategoryList();
         setMenu(view);
     }
 
     @Override
-    public void onResume(){
-        backfromresume=true;
+    public void onResume() {
+        backfromresume = true;
         super.onResume();
     }
 
@@ -174,8 +175,8 @@ public class CategoryFragment extends Fragment {
 
     private void ListFilter() {
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+        if (act != null && act.getSupportActionBar() != null) {
+            ProgressBar progressBar = act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
         this.CategoryList.clear();
@@ -194,8 +195,8 @@ public class CategoryFragment extends Fragment {
         }
         CategoryList.sort(comp);
         CLA.notifyDataSetChanged();
-        if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+        if (act != null && act.getSupportActionBar() != null) {
+            ProgressBar progressBar = act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.INVISIBLE);
         }
     }

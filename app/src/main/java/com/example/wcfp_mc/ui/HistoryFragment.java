@@ -29,8 +29,8 @@ import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
-    private  SQLiteDatabase db;
-    private final ArrayList<CFP> CFPList =new ArrayList<>();
+    private SQLiteDatabase db;
+    private final ArrayList<CFP> CFPList = new ArrayList<>();
     private CFPListAdapter CLA;
     private Handler handler;
 
@@ -42,8 +42,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CFPDBHelper dbHelper=new CFPDBHelper(getContext());
-        db=dbHelper.getReadableDatabase();
+        CFPDBHelper dbHelper = new CFPDBHelper(getContext());
+        db = dbHelper.getReadableDatabase();
     }
 
     @Override
@@ -55,13 +55,13 @@ public class HistoryFragment extends Fragment {
 
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 final AppCompatActivity act = (AppCompatActivity) getActivity();
-                if (act!=null && act.getSupportActionBar() != null) {
-                    ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+                if (act != null && act.getSupportActionBar() != null) {
+                    ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 switch (msg.what) {
@@ -73,14 +73,14 @@ public class HistoryFragment extends Fragment {
                 }
             }
         };
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.historylist);
+        RecyclerView recyclerView = view.findViewById(R.id.historylist);
         // 設置RecyclerView為列表型態
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // 設置格線
-        if(getContext()!=null) {
+        if (getContext() != null) {
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
-        CLA = new CFPListAdapter(CFPList,getContext());
+        CLA = new CFPListAdapter(CFPList, getContext());
         recyclerView.setAdapter(CLA);
         getHistory();
     }
@@ -89,18 +89,18 @@ public class HistoryFragment extends Fragment {
         new Thread(() -> {
             try {
                 CFPList.clear();
-                Cursor c = db.rawQuery("select * from history",null);
-                if(c.getCount()>0){
+                Cursor c = db.rawQuery("select * from history", null);
+                if (c.getCount() > 0) {
                     c.moveToLast();
-                   do{
-                        CFP newcfp=new CFP();
+                    do {
+                        CFP newcfp = new CFP();
                         newcfp.setEvent(c.getString(1));
                         newcfp.setName(c.getString(2));
                         newcfp.setURL(c.getString(3));
                         newcfp.setTime(c.getString(4));
                         newcfp.setDeadline(c.getString(5));
                         CFPList.add(newcfp);
-                    } while(c.moveToPrevious());
+                    } while (c.moveToPrevious());
                 }
                 c.close();
                 Message msg = new Message();

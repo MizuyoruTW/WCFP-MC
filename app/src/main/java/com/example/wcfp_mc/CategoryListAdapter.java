@@ -37,30 +37,34 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-            textView = (TextView) view.findViewById(R.id.textView);
-            textView2 = (TextView) view.findViewById(R.id.textView2);
-            checkBox=(CheckBox)view.findViewById(R.id.checkBox);
+            textView = view.findViewById(R.id.textView);
+            textView2 = view.findViewById(R.id.textView2);
+            checkBox = view.findViewById(R.id.checkBox);
         }
 
         public TextView getNameTextView() {
             return textView;
         }
+
         public TextView getCFPTextView() {
             return textView2;
         }
-        public CheckBox getCheckBox(){return checkBox;}
+
+        public CheckBox getCheckBox() {
+            return checkBox;
+        }
     }
 
     /**
      * Initialize the dataset of the Adapter.
      *
      * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
+     *                by RecyclerView.
      */
-    public CategoryListAdapter(ArrayList<Category>  dataSet, Context context) {
+    public CategoryListAdapter(ArrayList<Category> dataSet, Context context) {
         localDataSet = dataSet;
-        CategoryDBHelper dbHelper=new CategoryDBHelper(context);
-        db=dbHelper.getReadableDatabase();
+        CategoryDBHelper dbHelper = new CategoryDBHelper(context);
+        db = dbHelper.getReadableDatabase();
     }
 
     // Create new views (invoked by the layout manager)
@@ -77,30 +81,30 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        CheckBox checkBox=viewHolder.getCheckBox();
+        CheckBox checkBox = viewHolder.getCheckBox();
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
-        viewHolder.getCFPTextView().setText(String.format(Locale.getDefault(),"%1$d CFPs",localDataSet.get(position).getCFPs()));
-        String sql=String.format(Locale.getDefault(),"SELECT * FROM favorates WHERE name='%1$s'",localDataSet.get(position).getName());
-        Cursor c=db.rawQuery(sql,null);
-        checkBox.setChecked(c.getCount()>0);
+        viewHolder.getCFPTextView().setText(String.format(Locale.getDefault(), "%1$d CFPs", localDataSet.get(position).getCFPs()));
+        String sql = String.format(Locale.getDefault(), "SELECT * FROM favorates WHERE name='%1$s'", localDataSet.get(position).getName());
+        Cursor c = db.rawQuery(sql, null);
+        checkBox.setChecked(c.getCount() > 0);
         c.close();
         checkBox.setOnClickListener(view -> {
-            if(((CheckBox)view).isChecked()){
+            if (((CheckBox) view).isChecked()) {
                 ContentValues cv = new ContentValues();
-                cv.put("name",localDataSet.get(position).getName());
+                cv.put("name", localDataSet.get(position).getName());
                 db.insert("favorates", null, cv);
-            }else{
-                db.delete("favorates", "name='"+localDataSet.get(position).getName()+"'",null);
+            } else {
+                db.delete("favorates", "name='" + localDataSet.get(position).getName() + "'", null);
             }
         });
         viewHolder.itemView.setOnClickListener(view -> {
-            MainActivity act=(MainActivity) view.getContext();
+            MainActivity act = (MainActivity) view.getContext();
             NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
             Bundle bundle = new Bundle();
             bundle.putString("name", localDataSet.get(position).getName());
             bundle.putString("url", localDataSet.get(position).getUrl());
 
-            navController.navigate(R.id.action_to_cfps,bundle);
+            navController.navigate(R.id.action_to_cfps, bundle);
         });
     }
 

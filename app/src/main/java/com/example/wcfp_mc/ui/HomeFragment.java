@@ -25,15 +25,15 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        ImageButton FB = (ImageButton)view.findViewById(R.id.FBlogo);
-        ImageButton Twitter = (ImageButton) view.findViewById(R.id.TTlogo);
-        ImageButton Linkedin=(ImageButton)view.findViewById(R.id.LIlogo);
-        ImageView homebtn=(ImageView) view.findViewById(R.id.imageView2);
+        ImageButton FB = view.findViewById(R.id.FBlogo);
+        ImageButton Twitter = view.findViewById(R.id.TTlogo);
+        ImageButton Linkedin= view.findViewById(R.id.LIlogo);
+        ImageView homebtn= view.findViewById(R.id.imageView2);
 
         FB.setOnClickListener(view1 -> {
-            Intent intent=new Intent();
+            Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse( "http://www.facebook.com/sharer.php?u=http://www.wikicfp.com"));
+            intent.setData(Uri.parse("http://www.facebook.com/sharer.php?u=http://www.wikicfp.com"));
             startActivity(intent);
         });
         Twitter.setOnClickListener(view1 -> {

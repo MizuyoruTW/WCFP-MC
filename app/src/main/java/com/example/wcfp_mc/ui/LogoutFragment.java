@@ -38,12 +38,12 @@ public class LogoutFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-        Button button=view.findViewById(R.id.logout);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Button button = view.findViewById(R.id.logout);
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-            switch (which){
+            switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    if(getActivity()!=null) {
+                    if (getActivity() != null) {
                         SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, 0).edit();
                         editor.putString("user_name", "");
                         editor.putString("cookie_value", "");
@@ -51,7 +51,7 @@ public class LogoutFragment extends Fragment {
                     }
                     NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-                    TextView textView= navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
+                    TextView textView = navigationView.getHeaderView(0).findViewById(R.id.nav_header_title);
                     textView.setText(getActivity().getResources().getString(R.string.nav_header_title));
                     navController.navigateUp();
                     break;
@@ -63,7 +63,7 @@ public class LogoutFragment extends Fragment {
         };
 
         button.setOnClickListener(view1 -> {
-            if(getContext()!=null) {
+            if (getContext() != null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage("你確定要登出嗎?").setPositiveButton("是", dialogClickListener)
                         .setNegativeButton("否", dialogClickListener).show();
