@@ -1,6 +1,10 @@
 package com.example.wcfp_mc.ui;
 
+import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +26,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.wcfp_mc.CFP;
+import com.example.wcfp_mc.CFPDBHelper;
 import com.example.wcfp_mc.Category;
 import com.example.wcfp_mc.MainActivity;
 import com.example.wcfp_mc.R;
@@ -49,9 +54,11 @@ public class CurrentCFPFragment extends Fragment {
     private final ArrayList<Category> categories = new ArrayList<>();
     public static final String PREFS_NAME = "MyPrefsFile";
     private boolean isloading = false;
+    private SQLiteDatabase db;
+    private boolean firsttime = true;
 
-    private String copyownerid="";
-    private String eventid="";
+    private String copyownerid = "";
+    private String eventid = "";
 
     public CurrentCFPFragment() {
         // Required empty public constructor
@@ -64,10 +71,12 @@ public class CurrentCFPFragment extends Fragment {
         if (getArguments() != null) {
             url = getArguments().getString("url", "");
         }
-        if(getActivity()!=null) {
+        if (getActivity() != null) {
             SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
             cookie = settings.getString("cookie_value", "");
         }
+        CFPDBHelper dbHelper = new CFPDBHelper(getContext());
+        db = dbHelper.getReadableDatabase();
     }
 
     @Override
@@ -84,11 +93,11 @@ public class CurrentCFPFragment extends Fragment {
             public void handleMessage(Message msg) {
                 final AppCompatActivity act = (AppCompatActivity) getActivity();
                 if (act != null && act.getSupportActionBar() != null) {
-                    ProgressBar progressBar = (ProgressBar) act.findViewById(R.id.progressBar);
+                    ProgressBar progressBar = act.findViewById(R.id.progressBar);
                     progressBar.setVisibility(View.INVISIBLE);
                 }
                 isloading = false;
-                if(getContext()==null){
+                if (getContext() == null) {
                     return;
                 }
                 switch (msg.what) {
@@ -98,6 +107,16 @@ public class CurrentCFPFragment extends Fragment {
                         break;
                     case 1:
                         showResult(view);
+                        if (firsttime) {
+                            ContentValues cv = new ContentValues();
+                            cv.put("event", event);
+                            cv.put("name", name);
+                            cv.put("time", time);
+                            cv.put("url", url);
+                            cv.put("deadline", deadline);
+                            db.insert("history", null, cv);
+                            firsttime = false;
+                        }
                         break;
                     case -1:
                         Toast.makeText(getContext(), msg.obj.toString(), Toast.LENGTH_SHORT).show();
@@ -135,8 +154,8 @@ public class CurrentCFPFragment extends Fragment {
 
     private void getContent() {
         final AppCompatActivity act = (AppCompatActivity) getActivity();
-        if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar = (ProgressBar) act.findViewById(R.id.progressBar);
+        if (act != null && act.getSupportActionBar() != null) {
+            ProgressBar progressBar = act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
         getContentBackground();
@@ -182,8 +201,8 @@ public class CurrentCFPFragment extends Fragment {
                     newCFP.setName(row.selectFirst("td").text().replace(newCFP.getEvent(), ""));
                     related.add(newCFP);
                 }
-                copyownerid=data.selectFirst("input[name='copyownerid']").attr("value");
-                eventid=data.selectFirst("input[name='eventid']").attr("value");
+                copyownerid = data.selectFirst("input[name='copyownerid']").attr("value");
+                eventid = data.selectFirst("input[name='eventid']").attr("value");
                 Message msg = new Message();
                 msg.what = 1;
                 handler.sendMessage(msg);
@@ -200,7 +219,7 @@ public class CurrentCFPFragment extends Fragment {
         isloading = true;
         new Thread(() -> {
             try {
-                String requesturl="http://wikicfp.com/cfp/servlet/event.showcfp?eventid="+eventid+ "&copyownerid="+copyownerid;
+                String requesturl = "http://wikicfp.com/cfp/servlet/event.showcfp?eventid=" + eventid + "&copyownerid=" + copyownerid;
                 Document doc = Jsoup.connect(requesturl.replace("event.showcfp?", "event.copycfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
                 System.out.println(doc.toString());
                 Message msg = new Message();
@@ -219,7 +238,7 @@ public class CurrentCFPFragment extends Fragment {
         new Thread(() -> {
             try {
                 isloading = true;
-                String requesturl="http://wikicfp.com/cfp/servlet/event.showcfp?eventid="+eventid+ "&copyownerid="+copyownerid;
+                String requesturl = "http://wikicfp.com/cfp/servlet/event.showcfp?eventid=" + eventid + "&copyownerid=" + copyownerid;
                 Jsoup.connect(requesturl.replace("event.showcfp?", "event.delcfp?getaddress=event.showcfp&")).cookie("accountkey", cookie).timeout(5000).get();
                 Message msg = new Message();
                 msg.what = 2;
@@ -234,18 +253,25 @@ public class CurrentCFPFragment extends Fragment {
     }
 
     private void showResult(View view) {
-        if(getActivity()!=null) {
-            ActionBar actionBar=((AppCompatActivity) getActivity()).getSupportActionBar();
-            if(actionBar!=null) {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
                 actionBar.setTitle(event);
             }
-        }else{
+        } else {
             return;
         }
         TextView textView = view.findViewById(R.id.CFPevent);
         CheckBox checkBox = view.findViewById(R.id.ismylist);
         LinearLayout linearLayout = view.findViewById(R.id.CFPrelated);
-        textView.setText(event);
+        String eventhtml = "<a href=''>" + event + "</a>";
+        textView.setText(HtmlCompat.fromHtml(eventhtml, HtmlCompat.FROM_HTML_MODE_LEGACY));
+        textView.setOnClickListener(view1 -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
         textView = view.findViewById(R.id.CFPname);
         textView.setText(name);
         textView = view.findViewById(R.id.CFPtime);

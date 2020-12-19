@@ -1,9 +1,11 @@
 package com.example.wcfp_mc;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -64,6 +66,20 @@ public class MainActivity extends AppCompatActivity {
         String username = settings.getString("user_name","");
         if(!username.equals("")){
             textView.setText(String.format(Locale.getDefault(),"歡迎，%1$s", username));
+        }
+
+        Intent intent=getIntent();
+        if(intent.getData()!=null){
+            String path=intent.getData().toString();
+            System.out.println("get data "+path);
+            Bundle bundle = new Bundle();
+            bundle.putString("url", path);
+            if(path.contains("showcfp")){
+                navController.navigate(R.id.action_to_cfp,bundle);
+            }else if(path.contains("call?conference")){
+                bundle.putString("name", intent.getData().getQueryParameter("conference"));
+                navController.navigate(R.id.action_to_cfps,bundle);
+            }
         }
     }
 

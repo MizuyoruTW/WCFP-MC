@@ -26,7 +26,6 @@ import java.util.Locale;
 public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHolder> {
 
     private final ArrayList<CFP> localDataSet;
-    private  final SQLiteDatabase db;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -62,8 +61,6 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
     }
     public CFPListAdapter(ArrayList<CFP>  dataSet, Context context) {
         localDataSet = dataSet;
-        CFPDBHelper dbHelper=new CFPDBHelper(context);
-        db=dbHelper.getReadableDatabase();
     }
 
     @Override
@@ -84,13 +81,6 @@ public class CFPListAdapter extends RecyclerView.Adapter<CFPListAdapter.ViewHold
         viewHolder.getTimeTextView().setText(localDataSet.get(position).getTime());
         viewHolder.getDeadlineTextView().setText(localDataSet.get(position).getDeadline());
         viewHolder.itemView.setOnClickListener(view -> {
-            ContentValues cv = new ContentValues();
-            cv.put("event",localDataSet.get(position).getEvent());
-            cv.put("name",localDataSet.get(position).getName());
-            cv.put("time",localDataSet.get(position).getTime());
-            cv.put("url",localDataSet.get(position).getURL());
-            cv.put("deadline",localDataSet.get(position).getDeadline());
-            db.insert("history",null,cv);
             MainActivity act=(MainActivity) view.getContext();
             NavController navController = Navigation.findNavController(act, R.id.nav_host_fragment);
             Bundle bundle = new Bundle();
