@@ -267,8 +267,7 @@ public class CurrentCFPFragment extends Fragment {
         String eventhtml = "<a href=''>" + event + "</a>";
         textView.setText(HtmlCompat.fromHtml(eventhtml, HtmlCompat.FROM_HTML_MODE_LEGACY));
         textView.setOnClickListener(view1 -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
+            Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,Intent.CATEGORY_APP_BROWSER);
             intent.setData(Uri.parse(url));
             startActivity(intent);
         });

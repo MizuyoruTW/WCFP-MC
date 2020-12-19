@@ -49,8 +49,7 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
         homebtn.setOnClickListener(view1 -> {
-            Intent intent=new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
+            Intent intent=Intent.makeMainSelectorActivity(Intent.ACTION_MAIN,Intent.CATEGORY_APP_BROWSER);
             intent.setData(Uri.parse( "http://www.wikicfp.com"));
             startActivity(intent);
         });
