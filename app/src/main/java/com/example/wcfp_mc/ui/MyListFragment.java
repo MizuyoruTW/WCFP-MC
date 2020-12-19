@@ -34,7 +34,7 @@ public class MyListFragment extends Fragment {
     private  String MyListURL="";
     private CFPListAdapter CLA;
     private Handler handler;
-    private int page;
+    private int page=0;
     private boolean backfromresume=false;
 
     public MyListFragment() {
@@ -44,7 +44,6 @@ public class MyListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        page=1;
         if(getActivity()!=null) {
             SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
             String cookie = settings.getString("cookie_value", "");
@@ -67,7 +66,7 @@ public class MyListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState){
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mylist);
+        RecyclerView recyclerView = view.findViewById(R.id.mylist);
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -97,7 +96,6 @@ public class MyListFragment extends Fragment {
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
             if (!recyclerView.canScrollVertically(1)) {
-                ++page;
                 getList();
             }
         });
@@ -115,7 +113,7 @@ public class MyListFragment extends Fragment {
     private void getList(){
         final AppCompatActivity act = (AppCompatActivity) getActivity();
         if (act!=null && act.getSupportActionBar() != null) {
-            ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
+            ProgressBar progressBar= act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
         getListBackground();
@@ -124,6 +122,7 @@ public class MyListFragment extends Fragment {
     private void getListBackground(){
         new Thread(() -> {
             try {
+                ++page;
                 Document data = Jsoup.connect(MyListURL  + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(8).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {
@@ -147,6 +146,7 @@ public class MyListFragment extends Fragment {
                 msg.what = 1;
                 handler.sendMessage(msg);
             } catch (Exception e) {
+                --page;
                 Message msg = new Message();
                 msg.what = -1;
                 msg.obj = e.toString();

@@ -38,7 +38,7 @@ public class CFPsFragment extends Fragment {
     private  String CategoryURL="";
     private CFPListAdapter CLA;
     private Handler handler;
-    private int page=1;
+    private int page=0;
     private boolean backfromresume=false;
 
 
@@ -102,7 +102,6 @@ public class CFPsFragment extends Fragment {
         recyclerView.setAdapter(CLA);
         recyclerView.setOnScrollChangeListener((view1, i, i1, i2, i3) -> {
             if (!recyclerView.canScrollVertically(1)) {
-                ++page;
                 getCFPList();
             }
         });
@@ -129,6 +128,7 @@ public class CFPsFragment extends Fragment {
     private void getCFPListBackground() {
         new Thread(() -> {
             try {
+                ++page;
                 Document data = Jsoup.connect(CategoryURL + "&page=" + page).timeout(5000).get();
                 Elements table = data.select("tbody").get(5).select("tr");
                 for (int i = 1; i < table.size(); i+=2) {
@@ -150,6 +150,7 @@ public class CFPsFragment extends Fragment {
                 msg.what = 1;
                 handler.sendMessage(msg);
             } catch (Exception e) {
+                --page;
                 Message msg = new Message();
                 msg.what = -1;
                 msg.obj = e.toString();

@@ -48,6 +48,7 @@ public class CategoryFragment extends Fragment {
     private Handler handler;
     private String filter = "";
     private int sortby = 0;
+    private boolean backfromresume=false;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -118,8 +119,14 @@ public class CategoryFragment extends Fragment {
             ProgressBar progressBar=(ProgressBar) act.findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
-        getCategoryList();
+        if(!backfromresume) getCategoryList();
         setMenu(view);
+    }
+
+    @Override
+    public void onResume(){
+        backfromresume=true;
+        super.onResume();
     }
 
     private void getCategoryList() {

@@ -50,6 +50,8 @@
     <!--設定-->
     <string name="themeLBL">主題</string>
     <string name="DKmode">黑暗模式</string>
+    <string name="delete_history">刪除歷史紀錄</string>
+    <string name="delete">刪除</string>
 
     <!--CFP-->
     <string name="CFPtimeLBL">Time : </string>
