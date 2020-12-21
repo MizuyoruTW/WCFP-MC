@@ -179,7 +179,7 @@ public class CurrentCFPFragment extends Fragment {
                 //get content
                 content = data.selectFirst("div.cfp").html();
                 //get link
-                link = data.selectFirst("a[target='_newtab']").text();
+                link = data.selectFirst("a[target='_newtab']")!=null?data.selectFirst("a[target='_newtab']").text():"N/A";
                 //get categories
                 table = data.select("tbody").get(9).select("tr").get(1).select("a");
                 for (int i = 1; i < table.size(); ++i) {
@@ -207,6 +207,7 @@ public class CurrentCFPFragment extends Fragment {
                 msg.what = 1;
                 handler.sendMessage(msg);
             } catch (Exception e) {
+                e.printStackTrace();
                 Message msg = new Message();
                 msg.what = -1;
                 msg.obj = e.toString();
@@ -226,6 +227,7 @@ public class CurrentCFPFragment extends Fragment {
                 msg.what = 2;
                 handler.sendMessage(msg);
             } catch (Exception e) {
+                e.printStackTrace();
                 Message msg = new Message();
                 msg.what = -2;
                 msg.obj = e.toString();
@@ -244,6 +246,7 @@ public class CurrentCFPFragment extends Fragment {
                 msg.what = 2;
                 handler.sendMessage(msg);
             } catch (Exception e) {
+                e.printStackTrace();
                 Message msg = new Message();
                 msg.what = -2;
                 msg.obj = e.toString();
