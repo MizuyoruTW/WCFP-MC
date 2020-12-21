@@ -14,7 +14,7 @@
     <string name="menu_login">帳號管理</string>
     <string name="menu_history">歷史紀錄</string>
 
-    <string name="plc_hlder">waiting...</string>
+    <string name="plc_hlder">waiting…</string>
 
     <!--首頁-->
     <string name="welcome">Welcome!</string>
@@ -27,6 +27,7 @@
     <string name="atoz">A-Z</string>
     <string name="ztoa">Z-A</string>
     <string name="CFPs">%1$s CFPs</string>
+    <string name="fav">♥</string>
 
     <!--關於-->
     <string name="contact">Contact us</string>

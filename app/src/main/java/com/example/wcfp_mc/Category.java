@@ -5,6 +5,7 @@ public class Category {
     private int CFPs = 0;
     private String name = "";
     private String url = "";
+    private boolean fav = false;
 
     public Category() {
 
@@ -32,6 +33,14 @@ public class Category {
 
     public String getUrl() {
         return this.url;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 }
 

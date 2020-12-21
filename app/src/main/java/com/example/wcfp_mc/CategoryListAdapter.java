@@ -3,7 +3,6 @@ package com.example.wcfp_mc;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -84,10 +83,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         CheckBox checkBox = viewHolder.getCheckBox();
         viewHolder.getNameTextView().setText(localDataSet.get(position).getName());
         viewHolder.getCFPTextView().setText(String.format(Locale.getDefault(), "%1$d CFPs", localDataSet.get(position).getCFPs()));
-        String sql = String.format(Locale.getDefault(), "SELECT * FROM favorates WHERE name='%1$s'", localDataSet.get(position).getName());
-        Cursor c = db.rawQuery(sql, null);
-        checkBox.setChecked(c.getCount() > 0);
-        c.close();
+        checkBox.setChecked(localDataSet.get(position).isFav());
         checkBox.setOnClickListener(view -> {
             if (((CheckBox) view).isChecked()) {
                 ContentValues cv = new ContentValues();

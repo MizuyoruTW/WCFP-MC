@@ -1,6 +1,8 @@
 package com.example.wcfp_mc.ui;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wcfp_mc.Category;
+import com.example.wcfp_mc.CategoryDBHelper;
 import com.example.wcfp_mc.CategoryListAdapter;
 import com.example.wcfp_mc.R;
 
@@ -35,6 +38,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +52,7 @@ public class CategoryFragment extends Fragment {
     private String filter = "";
     private int sortby = 0;
     private boolean backfromresume = false;
+    private  SQLiteDatabase db;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -68,6 +73,8 @@ public class CategoryFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+        CategoryDBHelper dbHelper = new CategoryDBHelper(getContext());
+        db = dbHelper.getReadableDatabase();
         Activity activity = getActivity();
         RecyclerView recyclerView = view.findViewById(R.id.catagory_list);
         EditText editText = view.findViewById(R.id.editText);
@@ -182,7 +189,13 @@ public class CategoryFragment extends Fragment {
         this.CategoryList.clear();
         for (int i = 0; i < originalCL.size(); ++i) {
             if (originalCL.get(i).getName().startsWith(filter)) {
-                this.CategoryList.add(originalCL.get(i));
+                String sql = String.format(Locale.getDefault(), "SELECT * FROM favorates WHERE name='%1$s'", originalCL.get(i).getName());
+                Cursor c=db.rawQuery(sql,null);
+                if(sortby!=R.id.favorite_only||c.getCount()>0) {
+                    originalCL.get(i).setFav(c.getCount()>0);
+                    this.CategoryList.add(originalCL.get(i));
+                }
+                c.close();
             }
         }
         Comparator<Category> comp = new CategoryComparatorCFP().reversed();
