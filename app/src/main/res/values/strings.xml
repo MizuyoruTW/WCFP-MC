@@ -33,7 +33,7 @@
     <string name="contact">Contact us</string>
     <string name="jim_mail">s1071543@mail.yzu.edu.tw</string>
     <string name="yu_mail">s1071536@mail.yzu.edu.tw</string>
-    <string name="copyright">Copyright © 2020 – 2020. All rights reserved.</string>
+    <string name="copyleft">Protected by GNU GPL v3</string>
 
     <!--CFPs-->
     <string name="timeLBL">Time: </string>
